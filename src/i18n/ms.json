@@ -36,7 +36,7 @@
   "help": {
     "title": "🤖 {repoFullName}",
     "welcome": "Hai! Saya adalah butler Agent anda.\nHanya hantar saya arahan, dan saya akan mengendalikan segalanya.",
-    "agent_burger_management": "🤖 Arahan Pengurusan MyAgent",
+    "agent_core_management": "🤖 Arahan Pengurusan MyAgent",
     "list_desc": "/list      Senaraikan semua agent aktif bertugas",
     "new_desc": "/new       Cipta agent baharu",
     "schedules_desc": "/schedules   Senaraikan semua tugas berjadual",

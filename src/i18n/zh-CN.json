@@ -36,7 +36,7 @@
   "help": {
     "title": "🤖 {repoFullName}",
     "welcome": "嗨！我是你的Agent管家。\n你只要下指令，我就帮你搞定一切。",
-    "agent_burger_management": "🤖 MyAgent管理命令",
+    "agent_core_management": "🤖 MyAgent管理命令",
     "list_desc": "/list      列出MyAgent中所有值班中的Agent",
     "new_desc": "/new       在MyAgent中建立新的Agent",
     "schedules_desc": "/schedules   列出MyAgent所有定时任务",

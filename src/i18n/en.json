@@ -36,7 +36,7 @@
   "help": {
     "title": "🤖 {repoFullName}",
     "welcome": "Hi! I am your Agent butler.\nJust send me commands, and I'll handle everything.",
-    "agent_burger_management": "🤖 MyAgent Management Commands",
+    "agent_core_management": "🤖 MyAgent Management Commands",
     "list_desc": "/list      List all active Agents on duty",
     "new_desc": "/new       Create a new Agent",
     "schedules_desc": "/schedules   List all scheduled tasks",

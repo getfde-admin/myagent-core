@@ -10,7 +10,7 @@ const HELP_LINES = [
   "",
   "help.welcome",
   "",
-  "help.agent_burger_management",
+  "help.agent_core_management",
   "help.list_desc",
   "help.new_desc",
   "help.schedules_desc",
@@ -34,7 +34,7 @@ const HELP_LINES = [
 
 const SECTION_HEADERS = new Set([
   "help.title",
-  "help.agent_burger_management",
+  "help.agent_core_management",
   "help.agent_management",
 ]);
 

@@ -20,7 +20,7 @@
 import { t, glang } from "../i18n/index.js";
 import { logInfo, logWarn, logError, logT } from "../i18n/log.js";
 import { parseMetaComment, parseTelegramMeta } from "../github/webhooks/meta.js";
-import { escapeMarkdownV2, escapeMdV2Formatted } from "./markdown.js";
+import { escapeMarkdownV2, escapeMdV2Formatted, markdownToPlainText } from "./markdown.js";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -842,8 +842,9 @@ async function executeRelay(bot, payload, env, prep, built) {
     }
     logWarn("log.relay.formatParseFailedResend", { issue: issue.number, error: e.message });
 
-    // Rebuild as plain text (no parseMode)
-    const plainBody = buildFullRelayText(issue, comment, action, Re);
+    // Rebuild as plain text (no parseMode). Strip Markdown markers so the user
+    // sees readable text (not raw `#`/`|`/`**`), and truncate to the limit.
+    const plainBody = markdownToPlainText(buildFullRelayText(issue, comment, action, Re));
     S = fitMessage(issue, comment, action, { text: plainBody }, config.telegram.maxMessageLength, Re);
 
     const fallbackTarget = progressRelayTarget?.progressMessageId ?? relayedMessageId;

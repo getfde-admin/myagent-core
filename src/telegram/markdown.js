@@ -173,3 +173,25 @@ export function escapeMdV2Formatted(str) {
 
   return r;
 }
+
+// markdownToPlainText(str) — strip Markdown syntax to readable plain text.
+// Used as the last-resort fallback when a MarkdownV2 send fails to parse, so the
+// user never sees raw `#`/`|`/`**` markers. Tables are kept as readable rows
+// (separator rows dropped), code fences removed, headings/bold/links flattened.
+export function markdownToPlainText(str) {
+  if (typeof str !== "string") return "";
+  return str
+    .replace(/```\w*\n?/g, "")                       // opening code fences
+    .replace(/```/g, "")                             // closing code fences
+    .replace(/^#{1,6}\s+/gm, "")                     // headings
+    .replace(/\*\*([^*]+)\*\*/g, "$1")               // bold **text**
+    .replace(/(^|[^*])\*([^*\n]+)\*/g, "$1$2")       // italic *text*
+    .replace(/~~([^~]+)~~/g, "$1")                   // strikethrough
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1 ($2)")  // links → text (url)
+    .replace(/^\s*[|:\- ]+\s*$/gm, "")               // table separator rows (| --- | :--:)
+    .replace(/^\s*[-*+]\s+/gm, "• ")                 // list markers → bullet
+    .replace(/\|/g, " | ")                           // table pipes → readable
+    .replace(/[ \t]+/g, " ")                         // collapse whitespace
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}

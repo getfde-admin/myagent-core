@@ -21,7 +21,7 @@ async function fetchRemoteTemplateCatalog(config) {
   if (catalogCache !== null && Date.now() - catalogCacheTime < CATALOG_TTL) {
     return catalogCache;
   }
-  const url = "https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/installer/templates?ref=main";
+  const url = "https://api.github.com/repos/getfde-admin/myagent-toolkit/contents/installer/templates?ref=main";
   try {
     const resp = await fetch(url, {
       headers: {

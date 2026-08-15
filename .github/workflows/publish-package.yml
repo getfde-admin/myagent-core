@@ -33,7 +33,7 @@ jobs:
           # every deploy/update of the core and commits it — this is the only auto-channel through
           # which existing instances pick up workflow updates (new command menu, update-llm-secret.yml, etc.).
           # The single source of truth is myAgentToolkit/installer/workflows, pulled at publish time.
-          git clone --depth 1 https://github.com/jeffsia-blacksmith/myAgentToolkit.git /tmp/toolkit
+          git clone --depth 1 https://github.com/getfde-admin/myagent-toolkit.git /tmp/toolkit
           rm -rf actions
           mkdir -p actions
           cp -R /tmp/toolkit/installer/workflows/. actions/
@@ -52,7 +52,7 @@ jobs:
           # Generate manifest
           REVISION="$(git rev-parse HEAD)"
           VERSION="$(jq -r '.version' github-agent-worker-package.json)"
-          PACKAGE_URL="https://jeffsia-blacksmith.github.io/myAgentCore/github-agent-worker-package.zip"
+          PACKAGE_URL="https://getfde-admin.github.io/myagent-core/github-agent-worker-package.zip"
 
           jq -n \
             --arg version "$VERSION" \

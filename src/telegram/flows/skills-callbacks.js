@@ -88,7 +88,7 @@ function removeConfirmKeyboard(name, lang) {
 
 // 远端技能元数据 fetch
 async function fetchSkillMeta(config, skillName) {
-  const url = `https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/skills/${skillName}/githubagent.json?ref=main`;
+  const url = `https://api.github.com/repos/getfde-admin/myagent-toolkit/contents/skills/${skillName}/githubagent.json?ref=main`;
   const resp = await fetch(url, {
     headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": config.github.apiVersion, "User-Agent": config.github.userAgent },
   });
@@ -98,7 +98,7 @@ async function fetchSkillMeta(config, skillName) {
   return null;
 }
 async function fetchSkillsCatalog(config) {
-  const url = "https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/skills?ref=main";
+  const url = "https://api.github.com/repos/getfde-admin/myagent-toolkit/contents/skills?ref=main";
   const resp = await fetch(url, {
     headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": config.github.apiVersion, "User-Agent": config.github.userAgent },
   });

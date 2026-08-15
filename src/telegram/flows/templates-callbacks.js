@@ -22,7 +22,7 @@ async function clearTplState(store, chatId) {
 }
 
 async function fetchTemplatesCatalog(config) {
-  const url = "https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/installer/templates?ref=main";
+  const url = "https://api.github.com/repos/getfde-admin/myagent-toolkit/contents/installer/templates?ref=main";
   const resp = await fetch(url, {
     headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": config.github.apiVersion, "User-Agent": config.github.userAgent },
   });
@@ -31,7 +31,7 @@ async function fetchTemplatesCatalog(config) {
   return Array.isArray(data) ? data.filter((d) => d.type === "dir" && !d.name.startsWith(".")).map((d) => ({ name: d.name })) : [];
 }
 async function fetchTemplateManifest(config, name) {
-  const url = `https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/installer/templates/${name}/githubagent.json?ref=main`;
+  const url = `https://api.github.com/repos/getfde-admin/myagent-toolkit/contents/installer/templates/${name}/githubagent.json?ref=main`;
   const resp = await fetch(url, {
     headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": config.github.apiVersion, "User-Agent": config.github.userAgent },
   });

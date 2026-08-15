@@ -612,7 +612,7 @@ function skillDocsUrl(comment) {
   if (parseMetaComment(comment?.body || "")?.source !== "skill-installer") return "";
   const name = extractSkillName(comment?.body || "");
   return name
-    ? `https://github.com/jeffsia-blacksmith/myAgentToolkit/blob/main/skills/${encodeURIComponent(name)}/README.md`
+    ? `https://github.com/getfde-admin/myagent-toolkit/blob/main/skills/${encodeURIComponent(name)}/README.md`
     : "";
 }
 

@@ -1,58 +1,20 @@
-# myAgentCore — Versioning & Release Rules
+# myAgentCore — Artifacts-Only Repo (发布/产物仓库)
 
-## Version scheme
+> 本仓库**不含源码**。源码、构建脚本与测试位于私有仓库 `myagent-core-src`。
 
-This fork no longer tracks the upstream `duotify` version (`0.2.24`). It uses
-**Semantic Versioning** (`MAJOR.MINOR.PATCH`) starting at **`0.3.0`**.
+## 这里有什么
 
-- `0.x.y` — pre-1.0 prototyping. Breaking changes bump `MINOR`; features/fixes bump `PATCH`.
-- `1.x.y` — stable. Breaking changes bump `MAJOR`.
+- `GitHubAgentCore/index.js` — 构建后的 Cloudflare Worker bundle（Terraform 读取的产物）
+- `GitHubAgentCore/migrations/` — D1 migrations
+- `Terraform/` — Cloudflare Worker + D1 IaC
+- `.github/workflows/publish-package.yml` — 组装 zip 并部署到 GitHub Pages
 
-## Where the version lives
+## 版本规则
 
-The version must stay **in sync** across these places:
+版本号由私有 `myagent-core-src` 维护（`package.json` / `src/config.js`）。本仓库的
+`github-agent-worker-package.json` 的 `revision` 由 `publish-package.yml` 每次发布自动写入 git SHA，
+不要手动改。
 
-| File | Field | What it drives |
-|---|---|---|
-| `src/config.js:7` | `DEFAULT_VERSION` | Version the running worker reports (e.g. `/health`, config `version`) |
-| `package.json:3` | `version` | npm package version |
-| `package-lock.json` | `version` (root + `packages[""]`) | npm lockfile version |
-| `github-agent-worker-package.json:2` | `version` | Published manifest `version` |
-| `github-agent-worker-package.json:3` | `revision` | **Do NOT edit manually** — the publish workflow overwrites it with the git commit SHA |
+## 变更方式
 
-> ⚠️ `github-agent-worker-package.json` also has a `revision` field. That is **auto-set**
-> to the git SHA by `.github/workflows/publish-package.yml` on every publish. Never bump it by hand.
-
-## When to bump
-
-Because this project ships lots of small fixes, **small fixes land on `main` without a version bump** —
-deployed instances pick them up automatically via the `revision` (git SHA) comparison in
-`autoupdate.yml`. The human-facing version only changes when you **cut an explicit release**.
-
-- **Bump version:** only when running `npm run release` for a deliberate release.
-- **Do NOT bump** for routine small fixes/commits on `main`.
-
-## Releasing
-
-Run, from `myAgentCore/`:
-
-```bash
-npm run release -- <new-version>    # e.g. npm run release -- 0.3.0
-npm run build                       # rebuild the worker bundle
-```
-
-`npm run release <version>`:
-
-1. Validates `<version>` is semver (`MAJOR.MINOR.PATCH`, optionally `-prerelease`).
-2. Bumps `src/config.js`, `package.json`, and `github-agent-worker-package.json` in sync.
-3. Commits the version bump on `main`.
-4. Creates an annotated git tag `v<version>`.
-
-After that, `git push origin main --tags` publishes the tag; pushing `main` also triggers
-`.github/workflows/publish-package.yml` to rebuild and publish the Pages package.
-
-### Version bump rules
-- **Breaking change** (pre-1.0): bump `MINOR` (e.g. `0.3.0` → `0.4.0`).
-- **Feature / fix / small change**: bump `PATCH` (e.g. `0.3.0` → `0.3.1`).
-- Never bump `MAJOR` while pre-1.0; that only applies to `1.x+` stable.
-- Every bump must stay consistent across all 4 files — always use `npm run release`, not manual edits.
+所有源码变更请提交到 `myagent-core-src`，其 CI 构建后会自动把 `GitHubAgentCore/` 同步回本仓库。

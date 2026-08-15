@@ -51,7 +51,7 @@ myAgentCore/
 │   └── AUDIT-DEEP.md       # 历史审计记录（132 项）
 ├── build.mjs               # esbuild: src/worker.js → GitHubAgentCore/index.js
 ├── GitHubAgentCore/         # 构建产物 + D1 migrations
-├── test/                   # 护栏 + shadow-diff + mock
+├── test/                   # 护栏 + mock
 └── ARCHITECTURE.md         # 系统架构报告（含 Mermaid 图表）
 ```
 

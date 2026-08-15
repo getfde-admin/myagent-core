@@ -58,8 +58,11 @@ export function buildConfig(env) {
     throw new ConfigError("GITHUB_OWNER and GITHUB_REPO are required when TELEGRAM_BOT_TOKEN is set");
   }
   return {
+    // AGENT_LANGUAGE 為新名；保留讀舊 CLAW_LANGUAGE 作為相容 fallback（既有部署遷移用）。
     language:
-      typeof e.AGENT_LANGUAGE === "string" && e.AGENT_LANGUAGE.trim() ? e.AGENT_LANGUAGE.trim() : "en",
+      (typeof e.AGENT_LANGUAGE === "string" && e.AGENT_LANGUAGE.trim())
+        ? e.AGENT_LANGUAGE.trim()
+        : (typeof e.CLAW_LANGUAGE === "string" && e.CLAW_LANGUAGE.trim() ? e.CLAW_LANGUAGE.trim() : "en"),
     profileName: optString(e, "PROFILE_NAME") ?? githubRepo,
     personality: optString(e, "PERSONALITY") ?? "",
     initGitHubAgent: optBool(e, "INIT_GITHUB_AGENT"),

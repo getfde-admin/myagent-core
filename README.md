@@ -22,7 +22,7 @@ myAgentCore/
 ├── src-legacy/               # 旧混淆 bundle 归档（~20K 行，仅参考）
 ├── build.mjs                 # esbuild：src/worker.js → GitHubAgentCore/index.js
 ├── package.json              # npm run build / check / test:guardrails / test:guardrails-v2
-├── test/                     # e2e 护栏（14 + 40）+ shadow-diff + mock 基础设施
+├── test/                     # e2e 护栏（16 + 42）+ mock 基础设施
 ├── GitHubAgentCore/
 │   ├── index.js              # 【build 产物】Cloudflare Worker（压缩 bundle）← Terraform 读这个
 │   └── migrations/           # D1 database migrations（0001–0005）

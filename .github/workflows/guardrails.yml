@@ -37,3 +37,6 @@ jobs:
 
       - name: E2e guardrails (/health, /github/webhook, CRUD round-trip)
         run: npm run test:guardrails
+
+      - name: Guardrails v2 (webhook flows, skills/templates, i18n parity)
+        run: npm run test:guardrails-v2

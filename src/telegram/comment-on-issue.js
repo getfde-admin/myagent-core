@@ -10,7 +10,6 @@ import { getSchedState } from "./flows/schedule-flow.js";
 import { getLlmState } from "./flows/llm/state.js";
 import { getSkillState } from "./flows/skills-callbacks.js";
 import { getTplState } from "./flows/templates-callbacks.js";
-import { getLineState } from "./flows/line-bot.js";
 
 // 临时状态消息：回复后 5 秒自动删除（processing / message received 这类一次性提示）
 // serverless Worker：setTimeout 需经 executionCtx.waitUntil 注册，否则 isolate 在
@@ -83,7 +82,6 @@ export async function handleCommentOnIssue(ctx) {
   if (await getLlmState(store, chatId)) return false;
   if (await getSkillState(store, chatId)) return false;
   if (await getTplState(store, chatId)) return false;
-  if (await getLineState(store, chatId)) return false;
 
   const active = await getActiveIssue(store, chatId);
   if (!active) {

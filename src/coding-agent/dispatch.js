@@ -6,11 +6,10 @@ import { t, glang } from "../i18n/index.js";
 import { logInfo } from "../i18n/log.js";
 
 // ai/meta markers（对齐 il/en markers — old bundle il L6561-6563）
-// Skip: brain-result, tool-run, line-meta — NOT telegram-meta (human comments carry telegram-meta)
+// Skip: brain-result, tool-run — NOT telegram-meta (human comments carry telegram-meta)
 const SYSTEM_MARKERS = [
   /<!--\s*githubagent-brain-result:/,
   /<!--\s*githubagent-tool-run:/,
-  /<!--\s*line-meta:/,
 ];
 
 function isSystemComment(body) {

@@ -304,55 +304,8 @@ export function kbSkillDocsReply(lang) {
 export function kbStartDeployReply(lang) {
   return t("kb.startDeploy", {}, lang ?? glang());
 }
-export function kbContinueLineBotSetupReply(lang) {
-  return t("kb.continueLineBotSetup", {}, lang ?? glang());
-}
-export function kbTriggerLaterManuallyReply(lang) {
-  return t("kb.triggerLaterManually", {}, lang ?? glang());
-}
 export function kbDefaultReplyReply(lang) {
   return t("kb.defaultReply", {}, lang ?? glang());
-}
-
-// line.* edge
-export function lineConfirmAgentReply(lang) {
-  return t("line.confirm_agent", {}, lang ?? glang());
-}
-export function lineConfirmReplyMsgReply(lang) {
-  return t("line.confirm_reply_msg", {}, lang ?? glang());
-}
-export function lineConfirmTimezoneReply(lang) {
-  return t("line.confirm_timezone", {}, lang ?? glang());
-}
-export function lineAutoCreateLabelReply(lang) {
-  return t("line.auto_create_label", {}, lang ?? glang());
-}
-export function lineNoneLabelReply(lang) {
-  return t("line.none_label", {}, lang ?? glang());
-}
-export function lineEnableWebhookInstructionReply(lang) {
-  return t("line.enable_webhook_instruction", {}, lang ?? glang());
-}
-export function lineErrorBotIdFormatReply(lang) {
-  return t("line.error_bot_id_format", {}, lang ?? glang());
-}
-export function lineErrorBotIdRequiredReply(lang) {
-  return t("line.error_bot_id_required", {}, lang ?? glang());
-}
-export function lineErrorChannelIdFormatReply(lang) {
-  return t("line.error_channel_id_format", {}, lang ?? glang());
-}
-export function lineErrorChannelIdRequiredReply(lang) {
-  return t("line.error_channel_id_required", {}, lang ?? glang());
-}
-export function lineErrorIssueNumberFormatReply(lang) {
-  return t("line.error_issue_number_format", {}, lang ?? glang());
-}
-export function lineErrorAgentNotFoundReply(number, lang) {
-  return t("line.error_agent_not_found", { number }, lang ?? glang());
-}
-export function lineErrorTimezoneFormatReply(lang) {
-  return t("line.error_timezone_format", {}, lang ?? glang());
 }
 
 // templates.* additional
@@ -607,17 +560,6 @@ export function kbAgentFallbackNameReply(lang) {
   return t("kb.agentFallbackName", {}, lang ?? glang());
 }
 
-// line.cancelled_alert / deploy_workflow_title / setup_failed
-export function lineCancelledAlertReply(lang) {
-  return t("line.cancelled_alert", {}, lang ?? glang());
-}
-export function lineDeployWorkflowTitleReply(lang) {
-  return t("line.deploy_workflow_title", {}, lang ?? glang());
-}
-export function lineSetupFailedReply(lang) {
-  return t("line.setup_failed", {}, lang ?? glang());
-}
-
 // system.error_start
 export function systemErrorStartReply(lang) {
   return t("system.error_start", {}, lang ?? glang());
@@ -654,7 +596,7 @@ export function newFlowSetEnvFailedReply(name, error, lang) {
   return t("newFlow.setEnvFailed", { name, error }, lang ?? glang());
 }
 
-// templates.desc_default / desc_image_generation / desc_summary / name_default / name_image_generation / name_summary / sync_complete_ask_line
+// templates.desc_default / desc_image_generation / desc_summary / name_default / name_image_generation / name_summary
 export function templatesDescDefaultReply(lang) {
   return t("templates.desc_default", {}, lang ?? glang());
 }
@@ -672,9 +614,6 @@ export function templatesNameImageGenerationReply(lang) {
 }
 export function templatesNameSummaryReply(lang) {
   return t("templates.name_summary", {}, lang ?? glang());
-}
-export function templatesSyncCompleteAskLineReply(name, lang) {
-  return t("templates.sync_complete_ask_line", { name }, lang ?? glang());
 }
 
 // skillCatalog.* — skill catalog names/descriptions

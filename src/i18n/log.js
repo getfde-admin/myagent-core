@@ -87,7 +87,6 @@ export const LOG_KEYS = [
   "log.relay.payloadMissingFields",
   "log.relay.processingNewComment",
   "log.relay.progressTooLongTruncate",
-  "log.relay.skipLineSource",
   "log.relay.skipMissingMeta",
   "log.relay.skipNoChatId",
   "log.relay.skipScheduleSetup",

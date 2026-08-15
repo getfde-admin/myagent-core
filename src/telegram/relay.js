@@ -32,14 +32,12 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;           // Xk (L18742)
 
 const RE_TELEGRAM_META  = /<!--\s*telegram-meta:\s*(\{[\s\S]*?\})\s*-->/;
 const RE_ALBUM_META      = /<!--\s*githubagent-album-meta:\s*(\{[\s\S]*?\})\s*-->/;
-const RE_LINE_META       = /<!--\s*line-meta:\s*(\{[\s\S]*?\})\s*-->/;
 const RE_BRAIN_RESULT    = /<!--\s*githubagent-brain-result:\s*(\{[\s\S]*?\})\s*-->/;
 const RE_TOOL_RUN       = /<!--\s*githubagent-tool-run:\s*(\{[\s\S]*?\})\s*-->/;
 const RE_ARTIFACTS      = /<!--\s*githubagent-artifacts:\s*(\{[\s\S]*?\})\s*-->/;
 const RE_MEDIA_META     = /<!--\s*githubagent-media-meta:\s*(\{[\s\S]*?\})\s*-->/;
 // g-flagged versions for replace-all in stripAllMeta
 const RE_ALBUM_META_G    = /<!--\s*githubagent-album-meta:\s*\{[\s\S]*?\}\s*-->/g;
-const RE_LINE_META_G     = /<!--\s*line-meta:\s*\{[\s\S]*?\}\s*-->/g;
 const RE_BRAIN_RESULT_G  = /<!--\s*githubagent-brain-result:\s*\{[\s\S]*?\}\s*-->/g;
 const RE_TOOL_RUN_G     = /<!--\s*githubagent-tool-run:\s*\{[\s\S]*?\}\s*-->/g;
 const RE_ARTIFACTS_G    = /<!--\s*githubagent-artifacts:\s*\{[\s\S]*?\}\s*-->/g;
@@ -53,7 +51,6 @@ const RE_MD_IMAGE       = /!\[[^\]]*\]\((https?:\/\/[^)\s]+\.(?:png|jpe?g|webp|g
 
 const BRAIN_RESULT_KEY = "githubagent-brain-result"; // x_
 const TOOL_RUN_KEY     = "githubagent-tool-run";     // P_
-const LINE_META_KEY    = "line-meta";               // M_
 
 // ─── Meta helpers ────────────────────────────────────────────────────────────
 
@@ -84,29 +81,6 @@ function normalizeTelegramMeta(obj) {
   if (typeof t.ts === "string") r.ts = t.ts;
   if (typeof t.media_type === "string") r.media_type = t.media_type;
   return r;
-}
-
-// O_(e) — normalize line-meta object (L6516)
-function normalizeLineMeta(obj) {
-  if (typeof obj !== "object" || obj === null || Array.isArray(obj)) return null;
-  const t = obj;
-  const r = {};
-  if (typeof t.source === "string") r.source = t.source;
-  if (typeof t.source_type === "string") r.source_type = t.source_type;
-  if (typeof t.source_key === "string") r.source_key = t.source_key;
-  if (typeof t.user_id === "string") r.user_id = t.user_id;
-  if (typeof t.group_id === "string") r.group_id = t.group_id;
-  if (typeof t.room_id === "string") r.room_id = t.room_id;
-  if (typeof t.msg_id === "string") r.msg_id = t.msg_id;
-  if (typeof t.webhook_event_id === "string") r.webhook_event_id = t.webhook_event_id;
-  if (typeof t.ts === "string") r.ts = t.ts;
-  if (typeof t.bootstrap === "boolean") r.bootstrap = t.bootstrap;
-  return Object.keys(r).length > 0 ? r : null;
-}
-
-// lm(e) — check if body has line-meta (L6581 → O_(vs(e, nm)))
-function hasLineMeta(body) {
-  return normalizeLineMeta(parseMetaRegex(body, RE_LINE_META)) !== null;
 }
 
 // G_(e) — get telegram-meta source from comment body (L6573)
@@ -230,7 +204,7 @@ function stripAllMeta(body, opts = {}) {
 // il(e) — check if body contains system meta markers (L6654)
 function hasSystemMeta(body) {
   return typeof body === "string" && (
-    body.includes(BRAIN_RESULT_KEY) || body.includes(TOOL_RUN_KEY) || body.includes(LINE_META_KEY)
+    body.includes(BRAIN_RESULT_KEY) || body.includes(TOOL_RUN_KEY)
   );
 }
 
@@ -643,12 +617,7 @@ function shouldSkipRelay(issue, comment) {
   }
   // 1. Comment has telegram-meta with chat_id → bot echo, skip
   if (parseTelegramMeta(comment.body)) return true;
-  // 2. Comment has line-meta → LINE bot, skip
-  if (hasLineMeta(comment.body)) {
-    logInfo("log.relay.skipLineSource", { issue: issue.number });
-    return true;
-  }
-  // 3. Comment telegram-meta source=schedule-flow → skip
+  // 2. Comment telegram-meta source=schedule-flow → skip
   if (isSourceOneOf(comment.body, "schedule-flow")) {
     logInfo("log.relay.skipScheduleSetup", { issue: issue.number });
     return true;

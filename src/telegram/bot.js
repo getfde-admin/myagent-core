@@ -25,7 +25,6 @@ import { registerTemplateCallbacks, handleTemplateEnvText } from "./flows/templa
 import { registerVersion } from "./commands/version.js";
 import { registerSchedules } from "./commands/schedules.js";
 import { registerScheduleCallbacks, handleScheduleText } from "./flows/schedule-flow.js";
-import { registerLineBotCallbacks, handleLineText } from "./flows/line-bot.js";
 import { registerTemplateResetCallbacks } from "./flows/template-reset-callbacks.js";
 import { registerCommandMenuCallbacks } from "./flows/command-menu-callbacks.js";
 import { handleCommentOnIssue } from "./comment-on-issue.js";
@@ -40,7 +39,14 @@ export function createBot({ config, services }) {
   });
 
   // 启动时同步斜杠命令菜单（☰ / /）；命令描述由 i18n 生成，跟随 AGENT_LANGUAGE。
-  syncBotCommands(bot, config);
+  // 必须用 waitUntil 包裹：serverless 下 fire-and-forget 的 setMyCommands 会在
+  // webhook 响应返回后随 isolate 冻结而被中止，导致命令菜单永远为空。
+  const execCtx = services?.executionCtx;
+  if (execCtx?.waitUntil) {
+    execCtx.waitUntil(syncBotCommands(bot, config));
+  } else {
+    syncBotCommands(bot, config);
+  }
 
   // 1. AccessGuard — 对齐 Pd（L12010-12049）
   bot.use(
@@ -81,7 +87,6 @@ export function createBot({ config, services }) {
   registerSkillCallbacks(commands);
   registerTemplateCallbacks(commands);
   registerScheduleCallbacks(commands);
-  registerLineBotCallbacks(commands);
   registerTemplateResetCallbacks(commands);
   registerCommandMenuCallbacks(commands);
   bot.use(commands);
@@ -96,7 +101,6 @@ export function createBot({ config, services }) {
     if (await handleFlowText(ctx)) return;
     if (await handleEditText(ctx)) return;
     if (await handleScheduleText(ctx)) return;
-    if (await handleLineText(ctx)) return;
     if (await handleCommentOnIssue(ctx)) return;
     // AI 自然语言工作流派工（对齐旧 bundle RT 路径）
     const text = ctx.message?.text;

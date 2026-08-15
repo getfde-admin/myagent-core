@@ -3,7 +3,6 @@
 // R9 完整版：D1 记录 + Telegram 完成通知。
 
 import { t, glang } from "../../i18n/index.js";
-import { InlineKeyboard } from "grammy";
 import { logError } from "../../i18n/log.js";
 import { escapeMarkdownV2 as escapeMdV2 } from "../../telegram/markdown.js";
 
@@ -12,7 +11,6 @@ const WORKFLOW_PATHS = {
   templates: ".github/workflows/templates.yml",
   skills: ".github/workflows/skills.yml",
   removeSkill: ".github/workflows/remove-skill.yml",
-  lineBot: ".github/workflows/install-line-bot.yml",
 };
 
 // workflow_notifications CRUD（对齐 src/modules/workflow-notifications.js Gt L104-140）
@@ -63,10 +61,6 @@ async function updateNotification(d1, requestId, fields) {
   params.push(requestId);
   await d1.prepare(`UPDATE workflow_notifications SET ${sets.join(", ")} WHERE request_id = ?`).bind(...params).run();
 }
-async function getRecentPending(d1, path) {
-  const row = await d1.prepare("SELECT * FROM workflow_notifications WHERE workflow_path = ? AND status = 'pending' ORDER BY created_at DESC LIMIT 1").bind(path).first();
-  return row;
-}
 
 // 从 display_title 提取 req:<uuid>
 function extractRequestId(title) {
@@ -80,14 +74,6 @@ function parseIssueNumberFromPayload(payloadJson) {
     const parsed = JSON.parse(payloadJson);
     const n = Number.parseInt(String(parsed.issue_number ?? ""), 10);
     return Number.isInteger(n) && n > 0 ? n : null;
-  } catch { return null; }
-}
-// ME — 从 payload_json 解析 line_bot_channel_id（对齐 L19829-19837）
-function parseLineChannelId(payloadJson) {
-  if (!payloadJson) return null;
-  try {
-    const parsed = JSON.parse(payloadJson);
-    return String(parsed.line_bot_channel_id ?? "").trim() || null;
   } catch { return null; }
 }
 // IE — skills display_title 清洗（对齐 L19531-19540）
@@ -155,21 +141,6 @@ function templatesNotifyText(conclusion, status, name, lang) {
   if (["failure", "timed_out", "startup_failure", "action_required"].includes(conclusion)) return t("templates.failed_message", { name: eName }, lang);
   return t("templates.ended_message", { name: eName, result: escapeMdV2(conclusion || status || "unknown") }, lang);
 }
-// OE — lineBot 通知文本（对齐 L19843-19868，含 success webhook instruction）
-function lineBotNotifyText(conclusion, status, name, channelId, lang) {
-  const eName = escapeMdV2(name);
-  if (conclusion === "success") {
-    const lines = [t("line.deployed_message", { name: eName }, lang)];
-    if (channelId) {
-      const url = `https://developers.line.biz/console/channel/${channelId}/messaging-api`;
-      lines.push("", t("line.enable_webhook_instruction", {}, lang), escapeMdV2(url));
-    }
-    return lines.join("\n");
-  }
-  if (conclusion === "cancelled") return t("line.deploy_cancelled_message_callback", { name: eName }, lang);
-  if (["failure", "timed_out", "startup_failure", "action_required"].includes(conclusion)) return t("line.deploy_failed_message_callback", { name: eName }, lang);
-  return t("line.deploy_ended_message_callback", { name: eName, result: escapeMdV2(conclusion || status || "unknown") }, lang);
-}
 
 export function registerWorkflowRunHandlers(webhooks, env) {
   const run = payload => payload.workflow_run;
@@ -195,10 +166,6 @@ export function registerWorkflowRunHandlers(webhooks, env) {
       } else {
         const rid = extractRequestId(displayTitle);
         if (rid) notif = await getNotificationByRequestId(env.d1, rid);
-      }
-      // lineBot requested 特殊：用 pending 查询
-      if (!notif && event === "requested" && path === WORKFLOW_PATHS.lineBot) {
-        notif = await getRecentPending(env.d1, WORKFLOW_PATHS.lineBot);
       }
       if (!notif) return;
 
@@ -261,28 +228,6 @@ export function registerWorkflowRunHandlers(webhooks, env) {
         // PE — templates notify（对齐 L19727-19770）
         const name = cleanTemplateName(displayTitle, sourceId);
         text = templatesNotifyText(conclusion, runStatus, name, lang);
-        // line-bot 模板安装成功 → 启动 LINE 流（对齐 PE L19750-19765）
-        if (sourceId === "line-bot" && conclusion === "success") {
-          const issueNum = parseIssueNumberFromPayload(payloadJson);
-          text = t("line.postInstallPrompt", { name: escapeMdV2(name) }, lang);
-          if (notif.chat_id) {
-            const { InlineKeyboard } = await import("grammy");
-            replyMarkup = new InlineKeyboard()
-              .text(t("kb.continueLineBotSetup", {}, lang), "linebot_setup_continue:current")
-              .text(t("kb.triggerLaterManually", {}, lang), "linebot_setup_skip:current");
-            try {
-              await env.store.put(`linebot-setup:${notif.chat_id}`, JSON.stringify({ step: "POST_INSTALL_PROMPT", issueNumber: issueNum, promptMessageId: null }), { expirationTtl: 900 });
-            } catch (e) { logError("log.webhook.handleFailed", { error: e?.message ?? String(e) }); }
-          }
-        }
-      } else if (path === WORKFLOW_PATHS.lineBot) {
-        // GE — lineBot notify（对齐 L19885-19916）
-        const channelId = parseLineChannelId(payloadJson);
-        const name = sourceId || "LINE Bot";
-        text = lineBotNotifyText(conclusion, runStatus, name, channelId, lang);
-        // 清除 inline keyboard（对齐 GE L19913: reply_markup: new F()）
-        const { InlineKeyboard } = await import("grammy");
-        replyMarkup = new InlineKeyboard();
       } else {
         return;
       }

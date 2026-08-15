@@ -206,7 +206,6 @@ flowchart TB
         T4["handleFlowText<br/>(/new 流程)"]:::flow
         T5["handleEditText<br/>(/edit 流程)"]:::flow
         T6["handleScheduleText<br/>(排程流程)"]:::flow
-        T7["handleLineText<br/>(LINE Bot 配置)"]:::flow
         T8["handleCommentOnIssue<br/>(默认：转送 issue 评论)"]:::flow
         T9["handleNaturalLanguageCommand<br/>(AI 工作流派工)"]:::flow
     end
@@ -263,7 +262,7 @@ flowchart TB
     end
 
     subgraph "评论转送 (issue_comment)"
-        RC1["跳过条件检查<br/>(bot echo / line / schedule)"]:::relay
+        RC1["跳过条件检查<br/>(bot echo / schedule)"]:::relay
         RC2["解析 telegram-meta → chat_id"]:::relay
         RC3["转送到 Telegram<br/>(含图片检测 + MarkdownV2)"]:::relay
         RC4["Coding-Agent 派工<br/>(检查 branch + workflow)"]:::relay
@@ -271,10 +270,9 @@ flowchart TB
 
     subgraph "Workflow 完成通知"
         WN1["查询 D1 notification<br/>(by request_id / run_id)"]:::notify
-        WN2["匹配 workflow 类型<br/>(autoupdate/skills/templates/lineBot)"]:::notify
+        WN2["匹配 workflow 类型<br/>(autoupdate/skills/templates)"]:::notify
         WN3["发送 Telegram 通知<br/>(MarkdownV2 转义)"]:::notify
         WN4["skills 成功 → 建 issue 评论"]:::notify
-        WN5["line-bot 成功 → 发送 post-install 键盘"]:::notify
     end
 
     SIGN --> E1 & E2 & E3 & E4 & E5 & E6 & E7
@@ -303,7 +301,7 @@ flowchart TB
     COMMENT["GitHub Issue 评论<br/>(人类发送)"]:::input
 
     subgraph "派工门控 (dispatch.js)"
-        G1["isSystemComment?<br/>跳过 brain-result/tool-run/line-meta"]:::gate
+        G1["isSystemComment?<br/>跳过 brain-result/tool-run"]:::gate
         G2["isScheduleFlowRecord?<br/>跳过排程记录"]:::gate
         G3["hasCommentMeta?<br/>需要 telegram-meta 标记"]:::gate
         G4["isMediaPending?<br/>跳过未完成的媒体"]:::gate
@@ -530,7 +528,6 @@ flowchart TB
         FLOW_LLM["flows/llm/llm.js"]:::flow
         FLOW_SKILLS["flows/skills-callbacks.js"]:::flow
         FLOW_TPL["flows/templates-callbacks.js"]:::flow
-        FLOW_LINE["flows/line-bot.js"]:::flow
         FLOW_CB["flows/callbacks.js"]:::flow
         FLOW_STATE["flows/state.js"]:::flow
     end
@@ -549,7 +546,7 @@ flowchart TB
     ROUTES --> CONFIG & D1 & I18N & GHW & TGW & BOT
     BOT --> GUARD & CMD_START & CMD_LIST & CMD_HELP & CMD_OTHER
     BOT --> FLOW_NEW & FLOW_EDIT & FLOW_SCHED & FLOW_LLM
-    BOT --> FLOW_SKILLS & FLOW_TPL & FLOW_LINE & FLOW_CB
+    BOT --> FLOW_SKILLS & FLOW_TPL & FLOW_CB
     BOT --> RELAY & COMMENT & AI_INF
 
     GHW --> WH_INDEX
@@ -672,9 +669,8 @@ pie title 审计严重性分布
 - **派工流程**：从 issue 评论到 GitHub Actions workflow dispatch 完整可运行
 - **排程系统**：10+ 规则类型、cron 表达式解析、定时触发 + 锁机制
 - **技能/模板安装**：多步环境变量收集 + libsodium 加密 + D1 通知追踪
-- **LINE Bot**：完整配置流程 + 验证 + 部署 + post-install
 - **媒体转送**：单条 + 相册 (`Vs` body 结构化对齐) + git 上传 + jsonl 记录 + 无分支降级
 - **状态卡片**：7 路并行数据采集 + MarkdownV2 渲染 + 运行状态检测
 - **Auto-Init 自动初始化**：首个 Agent 创建、orphan 分支 sync、D1 元数据持久化与 `INIT_GITHUB_AGENT` 状态同步
 
-**代码现在可以被拥有、理解和修改。** 旧 bundle 的「改一点坏一片」连锁脆弱性已彻底消除，并通过自动化 guardrails 与 shadow-diff 测试护航。
+**代码现在可以被拥有、理解和修改。** 旧 bundle 的「改一点坏一片」连锁脆弱性已彻底消除，并通过自动化 guardrails 测试护航。

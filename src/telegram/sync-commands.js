@@ -70,12 +70,13 @@ let synced = false;
 
 export async function syncBotCommands(bot, config) {
   if (synced) return;
-  synced = true;
   try {
     const lang = config.language || "en";
     const commands = buildCommands(lang);
     if (!commands.length) return;
     await bot.api.setMyCommands({ commands });
+    // 仅在成功后置位：失败时下次请求会重试（serverless 下首次 waitUntil 可能被中止）
+    synced = true;
   } catch (err) {
     // 同步失败不阻断 worker 启动
     console.error("[sync-commands] setMyCommands failed:", err?.message ?? String(err));

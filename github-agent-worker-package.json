@@ -1,4 +1,6 @@
 {
-  "revision": "aa2f029668f3235f9f32a8dab2806f294bff8cc5",
-  "published_at": "2026-08-15T16:21:12Z"
+  "version": "0.3.0",
+  "revision": "e51ee50359b889d4213a2a71307e40ccd9fba7df",
+  "package_url": "https://getfde-admin.github.io/myagent-core/github-agent-worker-package.zip",
+  "published_at": "2026-08-15T16:27:25Z"
 }

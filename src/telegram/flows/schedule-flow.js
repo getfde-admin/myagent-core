@@ -366,7 +366,7 @@ export function registerScheduleCallbacks(composer) {
     let issueTitle = "";
     try {
       const { data } = await octokit.rest.issues.get({ owner, repo, issue_number: n });
-      if (data.state === "closed") { await ctx.answerCallbackQuery(t("schedule.flow.lobsterClosedDeleteOnly", {}, lang)); return; }
+      if (data.state === "closed") { await ctx.answerCallbackQuery(t("schedule.flow.agentClosedDeleteOnly", {}, lang)); return; }
       issueTitle = data.title;
     } catch { await ctx.answerCallbackQuery(t("schedule.issueNotFoundOrClosed", {}, lang)); return; }
     if (chatId) await clearFlowState(store, chatId);
@@ -419,7 +419,7 @@ export function registerScheduleCallbacks(composer) {
     // closed-issue guard
     if (source === "chat") {
       const closed = await isIssueClosed(octokit, owner, repo, sched.issueNumber);
-      if (closed) { await ctx.answerCallbackQuery(t("schedule.flow.lobsterClosedDeleteOnly", {}, lang)); return; }
+      if (closed) { await ctx.answerCallbackQuery(t("schedule.flow.agentClosedDeleteOnly", {}, lang)); return; }
     }
     const which = ctx.callbackQuery.data.match(/schedule_edit_(\w+):/)[1];
     const step = `awaiting_edit_${which}`;
@@ -486,7 +486,7 @@ export function registerScheduleCallbacks(composer) {
     if (source === "chat") {
       const closed = await isIssueClosed(octokit, owner, repo, sched.issueNumber);
       if (closed) {
-        await ctx.answerCallbackQuery(t("schedule.flow.lobsterClosedDeleteOnly", {}, lang));
+        await ctx.answerCallbackQuery(t("schedule.flow.agentClosedDeleteOnly", {}, lang));
         let title = "";
         try { const { data } = await octokit.rest.issues.get({ owner, repo, issue_number: sched.issueNumber }); title = data.title; } catch {}
         const { InlineKeyboard } = await import("grammy");
@@ -566,7 +566,7 @@ export function registerScheduleCallbacks(composer) {
     await ctx.answerCallbackQuery();
     if (isClosed) {
       // closed issue → standalone card with delete-only keyboard
-      const text = `${scheduleCardText(title, sched.issueNumber, sched, lang)}\n${t("schedule.flow.lobsterClosedDeleteOnly", {}, lang)}`;
+      const text = `${scheduleCardText(title, sched.issueNumber, sched, lang)}\n${t("schedule.flow.agentClosedDeleteOnly", {}, lang)}`;
       await ctx.reply(text, { reply_markup: scheduleChatCardKeyboard(id, lang) });
     } else {
       await ctx.reply(scheduleCardText(title, sched.issueNumber, sched, lang), { reply_markup: scheduleCardKeyboard(id, sched.issueNumber, sched.status !== "paused", lang, "chat") });

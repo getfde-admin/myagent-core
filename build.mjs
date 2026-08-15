@@ -1,8 +1,8 @@
-// build.mjs — 把可编辑的 src/worker.js 重新打包压缩成 GitHubClawCore/index.js
-// GitHubClawCore/index.js 是 Terraform 部署时 filebase64 读取的产物。
+// build.mjs — 把可编辑的 src/worker.js 重新打包压缩成 GitHubAgentCore/index.js
+// GitHubAgentCore/index.js 是 Terraform 部署时 filebase64 读取的产物。
 //
 // 用法：
-//   node build.mjs            # src/worker.js → GitHubClawCore/index.js（minified）
+//   node build.mjs            # src/worker.js → GitHubAgentCore/index.js（minified）
 //   node build.mjs --check    # 只打包到暂存并比对与 index.js.orig 的差异，不覆盖
 //
 // 需求：npm i（安装 esbuild）
@@ -13,7 +13,7 @@ import { dirname, join } from "node:path";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const SRC = join(root, "src/worker.js");
-const OUT = join(root, "GitHubClawCore/index.js");
+const OUT = join(root, "GitHubAgentCore/index.js");
 const ORIG = join(root, "src/index.orig.bundle.js");
 const checkOnly = process.argv.includes("--check");
 

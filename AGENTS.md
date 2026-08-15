@@ -1,4 +1,4 @@
-# altShiftClawCore — Versioning & Release Rules
+# myAgentCore — Versioning & Release Rules
 
 ## Version scheme
 
@@ -17,10 +17,10 @@ The version must stay **in sync** across these places:
 | `src/config.js:7` | `DEFAULT_VERSION` | Version the running worker reports (e.g. `/health`, config `version`) |
 | `package.json:3` | `version` | npm package version |
 | `package-lock.json` | `version` (root + `packages[""]`) | npm lockfile version |
-| `github-claw-worker-package.json:2` | `version` | Published manifest `version` |
-| `github-claw-worker-package.json:3` | `revision` | **Do NOT edit manually** — the publish workflow overwrites it with the git commit SHA |
+| `github-agent-worker-package.json:2` | `version` | Published manifest `version` |
+| `github-agent-worker-package.json:3` | `revision` | **Do NOT edit manually** — the publish workflow overwrites it with the git commit SHA |
 
-> ⚠️ `github-claw-worker-package.json` also has a `revision` field. That is **auto-set**
+> ⚠️ `github-agent-worker-package.json` also has a `revision` field. That is **auto-set**
 > to the git SHA by `.github/workflows/publish-package.yml` on every publish. Never bump it by hand.
 
 ## When to bump
@@ -34,7 +34,7 @@ deployed instances pick them up automatically via the `revision` (git SHA) compa
 
 ## Releasing
 
-Run, from `altShiftClawCore/`:
+Run, from `myAgentCore/`:
 
 ```bash
 npm run release -- <new-version>    # e.g. npm run release -- 0.3.0
@@ -44,7 +44,7 @@ npm run build                       # rebuild the worker bundle
 `npm run release <version>`:
 
 1. Validates `<version>` is semver (`MAJOR.MINOR.PATCH`, optionally `-prerelease`).
-2. Bumps `src/config.js`, `package.json`, and `github-claw-worker-package.json` in sync.
+2. Bumps `src/config.js`, `package.json`, and `github-agent-worker-package.json` in sync.
 3. Commits the version bump on `main`.
 4. Creates an annotated git tag `v<version>`.
 

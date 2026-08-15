@@ -47,7 +47,7 @@ const MOCK_ENV = {
   TELEGRAM_API_BASE_URL: "https://api.telegram.org",
   TELEGRAM_WEBHOOK_PATH: "/telegram/webhook",
   TELEGRAM_MAX_MESSAGE_LENGTH: "4096",
-  CLAW_SYS_GITHUB_TOKEN: "ghp_fake",
+  AGENT_SYS_GITHUB_TOKEN: "ghp_fake",
   SCHEDULES_DB: makeD1(),
 };
 
@@ -130,7 +130,7 @@ await hit("GET /health → 200 {ok,service}", "/health", {}, async (res) => {
   is(res, 200);
   const b = await json(res);
   if (b.ok !== true) throw new Error(`ok !== true: ${JSON.stringify(b)}`);
-  if (b.service !== "githubclaw-core") throw new Error(`service mismatch: ${b.service}`);
+  if (b.service !== "githubagent-core") throw new Error(`service mismatch: ${b.service}`);
   if (typeof b.version !== "string") throw new Error(`version missing: ${JSON.stringify(b)}`);
 });
 
@@ -138,7 +138,7 @@ await hit("GET / → 200 (root alias)", "/", {}, async (res) => {
   is(res, 200);
   const b = await json(res);
   if (b.ok !== true) throw new Error(`ok !== true`);
-  if (b.service !== "githubclaw-core") throw new Error(`service mismatch: ${b.service}`);
+  if (b.service !== "githubagent-core") throw new Error(`service mismatch: ${b.service}`);
 });
 
 console.log("guardrails-v2: 404 routing");
@@ -236,7 +236,7 @@ await hitTg("POST /help (configured) → reply with command list", guardedEnv, t
   if (text.length < 20) throw new Error(`help reply too short: ${text}`);
 });
 
-// 4. /list empty issues → one "no lobsters" reply
+// 4. /list empty issues → one "no agents" reply
 await hitTg("POST /list empty issues → reply (GitHub mocked empty)", guardedEnv, tgUpdate("/list"), [gh.issues([])], async (res, replies) => {
   is(res, 200);
   assertReply(replies);
@@ -260,7 +260,7 @@ console.log("guardrails-v2: Telegram flows (/new + switch_issue + close)");
 // 7. /new → reply enterName + D1 new-flow state awaiting_name
 await hitTg("POST /new → enterName reply + flow state awaiting_name", guardedEnv, tgUpdate("/new"), [], async (res, replies, _calls, env) => {
   is(res, 200);
-  const text = assertReply(replies, { contains: "lobster" });
+  const text = assertReply(replies, { contains: "agent" });
   void text;
   const flow = env.SCHEDULES_DB.getKv("new-flow:111");
   if (!flow) throw new Error("D1 missing new-flow:111");
@@ -290,7 +290,7 @@ await hitTg("POST /new → enterName reply + flow state awaiting_name", guardedE
     req = new Request("https://test.dev/telegram/webhook", {
       method: "POST",
       headers: { "x-telegram-bot-api-secret-token": env.TELEGRAM_WEBHOOK_SECRET, "content-type": "application/json" },
-      body: JSON.stringify(tgUpdate("Bookkeeping Lobster")),
+      body: JSON.stringify(tgUpdate("Bookkeeping Agent")),
     });
     res = await handler(req, env, ctx);
     await ctx.drain();
@@ -298,7 +298,7 @@ await hitTg("POST /new → enterName reply + flow state awaiting_name", guardedE
     assertReply(replies, { contains: "Bookkeeping" });
     const flow = env.SCHEDULES_DB.getKv("new-flow:111");
     const st = JSON.parse(flow);
-    if (st.step !== "awaiting_description" || st.name !== "Bookkeeping Lobster")
+    if (st.step !== "awaiting_description" || st.name !== "Bookkeeping Agent")
       throw new Error(`flow state after name: ${flow}`);
     console.log("  ✓ /new + text name → enterDescription reply + flow awaiting_description");
     pass++;
@@ -366,12 +366,12 @@ console.log("guardrails-v2: GitHub webhook event dispatch");
   // issue body 含 telegram-meta chat_id=111（对齐护栏 guardedEnv 的 chat id）
   const issueBody = `<!-- telegram-meta: {"chat_id":111,"msg_id":50} -->\n\n\`\`\`json\n{"name":"Test","description":"d"}\n\`\`\``;
   // comment body 含 brain-result meta（coding-agent output）— Zk 不跳过
-  const commentBody = `Hello from GitHub\n\n<!-- githubclaw-brain-result: {"source":"githubclaw-worker-brain"} -->`;
+  const commentBody = `Hello from GitHub\n\n<!-- githubagent-brain-result: {"source":"githubagent-worker-brain"} -->`;
   const payload = JSON.stringify({
     action: "created",
     issue: { number: 7, title: "Test issue", body: issueBody, html_url: "https://github.com/test-owner/test-repo/issues/7" },
     comment: { id: 99, body: commentBody, html_url: "https://github.com/test-owner/test-repo/issues/7#issuecomment-99" },
-    sender: { login: "claw-bot", type: "Bot" },
+    sender: { login: "agent-bot", type: "Bot" },
   });
   const sig = "sha256=" + createHmac("sha256", env.GITHUB_WEBHOOK_SECRET).update(payload).digest("hex");
   const tgReplies = [];
@@ -412,12 +412,12 @@ console.log("guardrails-v2: GitHub webhook event dispatch");
 {
   const env = baseEnv();
   const issueBody = `<!-- telegram-meta: {"chat_id":111,"msg_id":50} -->`;
-  const commentBody = `## 推荐店铺\n\n| 店铺 | 位置 | 类型 |\n|------|------|------|\n| GADGET HUB | S53 | 配件 |\n\n**营业时间：** 10:00\n\n---\n\n<!-- githubclaw-brain-result: {"source":"githubclaw-worker-brain"} -->`;
+  const commentBody = `## 推荐店铺\n\n| 店铺 | 位置 | 类型 |\n|------|------|------|\n| GADGET HUB | S53 | 配件 |\n\n**营业时间：** 10:00\n\n---\n\n<!-- githubagent-brain-result: {"source":"githubagent-worker-brain"} -->`;
   const payload = JSON.stringify({
     action: "created",
     issue: { number: 9, title: "Table test", body: issueBody, html_url: "https://github.com/test-owner/test-repo/issues/9" },
     comment: { id: 101, body: commentBody, html_url: "https://github.com/test-owner/test-repo/issues/9#issuecomment-101" },
-    sender: { login: "claw-bot", type: "Bot" },
+    sender: { login: "agent-bot", type: "Bot" },
   });
   const sig = "sha256=" + createHmac("sha256", env.GITHUB_WEBHOOK_SECRET).update(payload).digest("hex");
   const tgReplies = [];
@@ -560,22 +560,22 @@ function ghDispatch() {
   };
 }
 
-// 7. /clear no active → noActiveLobsterSelected
-await hitTg("POST /clear no active issue → noActiveLobsterSelected", guardedEnv, tgUpdate("/clear"), [], async (res, replies) => {
+// 7. /clear no active → noActiveAgentSelected
+await hitTg("POST /clear no active issue → noActiveAgentSelected", guardedEnv, tgUpdate("/clear"), [], async (res, replies) => {
   is(res, 200);
-  assertReply(replies, { contains: "lobster" });
+  assertReply(replies, { contains: "agent" });
 });
 
-// 8. /enable no active → noActiveLobsterSelected
-await hitTg("POST /enable no active issue → noActiveLobsterSelected", guardedEnv, tgUpdate("/enable"), [], async (res, replies) => {
+// 8. /enable no active → noActiveAgentSelected
+await hitTg("POST /enable no active issue → noActiveAgentSelected", guardedEnv, tgUpdate("/enable"), [], async (res, replies) => {
   is(res, 200);
-  assertReply(replies, { contains: "lobster" });
+  assertReply(replies, { contains: "agent" });
 });
 
-// 9. /workflow no active → noActiveLobsterSelected
-await hitTg("POST /workflow no active issue → noActiveLobsterSelected", guardedEnv, tgUpdate("/workflow"), [], async (res, replies) => {
+// 9. /workflow no active → noActiveAgentSelected
+await hitTg("POST /workflow no active issue → noActiveAgentSelected", guardedEnv, tgUpdate("/workflow"), [], async (res, replies) => {
   is(res, 200);
-  assertReply(replies, { contains: "lobster" });
+  assertReply(replies, { contains: "agent" });
 });
 
 // 10. /enable with active → enableWorkflow called
@@ -767,14 +767,14 @@ console.log("guardrails-v2: Media relay + album queue");
   }
 }
 
-console.log("guardrails-v2: Auto-init (installation.created + initGitHubClaw)");
-// 15. installation.created with INIT_GITHUB_CLAW=true → welcome + first lobster + autoInitCreated
+console.log("guardrails-v2: Auto-init (installation.created + initGitHubAgent)");
+// 15. installation.created with INIT_GITHUB_AGENT=true → welcome + first agent + autoInitCreated
 {
   const env = baseEnv({
     TELEGRAM_ALLOWED_FROM_ID: "111",
     TELEGRAM_ALLOWED_CHAT_ID: "111",
     TELEGRAM_CHAT_ID: "111",
-    INIT_GITHUB_CLAW: "true",
+    INIT_GITHUB_AGENT: "true",
   });
   const tgReplies = [];
   const mock = installMockFetch([
@@ -783,7 +783,7 @@ console.log("guardrails-v2: Auto-init (installation.created + initGitHubClaw)");
     gh.createIssue(1),
     gh.graphql({
       "default": {
-        ".github/workflows/issue-N.yml": "name: 执行小龙虾任务 #0\non: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo hi\n",
+        ".github/workflows/issue-N.yml": "name: 执行小Agent任务 #0\non: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo hi\n",
         "prompt.md": "You are a helpful assistant.\n",
       },
     }),
@@ -819,9 +819,9 @@ console.log("guardrails-v2: Auto-init (installation.created + initGitHubClaw)");
     const active = env.SCHEDULES_DB.getKv("active-issue:111");
     if (active !== "1") throw new Error(`active-issue:111 expected "1", got ${active}`);
     // init done flag set
-    if (env.SCHEDULES_DB.getKv("init_github_claw_done") !== "true")
-      throw new Error("init_github_claw_done not set");
-    console.log("  ✓ installation.created (initGitHubClaw=true) → welcome + first lobster + autoInitCreated");
+    if (env.SCHEDULES_DB.getKv("init_github_agent_done") !== "true")
+      throw new Error("init_github_agent_done not set");
+    console.log("  ✓ installation.created (initGitHubAgent=true) → welcome + first agent + autoInitCreated");
     pass++;
   } catch (e) {
     console.error(`  ✗ auto-init: ${e.message}`);
@@ -832,12 +832,12 @@ console.log("guardrails-v2: Auto-init (installation.created + initGitHubClaw)");
 }
 
 console.log("guardrails-v2: Batch A — /version /schedules /llm /edit");
-// /version → hardcoded "🦞 altShiftClawCore v<version>"
+// /version → hardcoded "🤖 myAgentCore v<version>"
 await hitTg("POST /version → hardcoded version string", guardedEnv, tgUpdate("/version"), [], async (res, replies) => {
   is(res, 200);
   if (replies.length !== 1) throw new Error(`expected 1 reply, got ${replies.length}`);
   const text = replies[0].text ?? "";
-  if (!text.startsWith("🦞 altShiftClawCore v")) throw new Error(`wrong version text: ${text}`);
+  if (!text.startsWith("🤖 myAgentCore v")) throw new Error(`wrong version text: ${text}`);
   if (!text.includes(DEFAULT_VERSION)) throw new Error(`missing version ${DEFAULT_VERSION}: ${text}`);
 });
 
@@ -847,18 +847,18 @@ await hitTg("POST /schedules (no schedules) → empty list reply", guardedEnv, t
   assertReply(replies, { contains: "schedules" });
 });
 
-// /llm no active issue → hardcoded "⚠️ No Lobster selected"
-await hitTg("POST /llm (no active) → hardcoded no-lobster reply", guardedEnv, tgUpdate("/llm"), [], async (res, replies) => {
+// /llm no active issue → hardcoded "⚠️ No Agent selected"
+await hitTg("POST /llm (no active) → hardcoded no-agent reply", guardedEnv, tgUpdate("/llm"), [], async (res, replies) => {
   is(res, 200);
   if (replies.length !== 1) throw new Error(`expected 1 reply, got ${replies.length}`);
   const text = replies[0].text ?? "";
-  if (!text.includes("No Lobster selected")) throw new Error(`missing "No Lobster selected": ${text}`);
+  if (!text.includes("No Agent selected")) throw new Error(`missing "No Agent selected": ${text}`);
 });
 
-// /edit no active issue → newFlow.noActiveLobster
-await hitTg("POST /edit (no active) → noActiveLobster reply", guardedEnv, tgUpdate("/edit"), [], async (res, replies) => {
+// /edit no active issue → newFlow.noActiveAgent
+await hitTg("POST /edit (no active) → noActiveAgent reply", guardedEnv, tgUpdate("/edit"), [], async (res, replies) => {
   is(res, 200);
-  assertReply(replies, { contains: "lobster" });
+  assertReply(replies, { contains: "agent" });
 });
 
 console.log("guardrails-v2: Batch B — skills/templates callbacks");
@@ -953,7 +953,7 @@ console.log("guardrails-v2: Batch C+D — schedule flow + template_reset + curre
     tg.getMe(),
     tg.sendMessage(replies),
     tg.answerCallback(cbAnswers),
-    gh.issueGet({ number: 7, title: "My Lobster", state: "open" }),
+    gh.issueGet({ number: 7, title: "My Agent", state: "open" }),
   ]);
   const ctx = capturingCtx();
   const post = async (update) => {

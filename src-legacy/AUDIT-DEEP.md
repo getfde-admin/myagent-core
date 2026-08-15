@@ -312,7 +312,7 @@ The issue_comment → Telegram relay was the last major subsystem with known gap
    - `telegram-progress:request:{chatId}:{msgId}` → relay state by request (for progress-message lookup)
    - **Progress-message edit-in-place**: for `edited` comments, looks up existing relayed message ID → `editMessageText`/`editMessageCaption` instead of sending new message.
 
-2. **Artifact-path image binary download** (was known gap): `detectPhotoCandidate` (old `eg`) checks `githubclaw-artifacts` meta for image references, falls back to repo file path extraction (old `pm`). `downloadArtifact` (old `tg`) fetches GitHub blob as raw binary → uploads via grammy `InputFile`. >10MB → text + GitHub blob URL fallback (old `Jf`/`Xf`). Image markdown stripped from caption via `stripImageRef` (old `Oi`).
+2. **Artifact-path image binary download** (was known gap): `detectPhotoCandidate` (old `eg`) checks `githubagent-artifacts` meta for image references, falls back to repo file path extraction (old `pm`). `downloadArtifact` (old `tg`) fetches GitHub blob as raw binary → uploads via grammy `InputFile`. >10MB → text + GitHub blob URL fallback (old `Jf`/`Xf`). Image markdown stripped from caption via `stripImageRef` (old `Oi`).
 
 3. **MarkdownV2 parse-failure retry** (was known gap): Catches `"can't parse entities"` error → rebuilds message via `buildFullRelayText` (old `Zs`) → retries `sendMessage`/`editMessageText` with plain text. Matches old `rE` catch block (L18989).
 

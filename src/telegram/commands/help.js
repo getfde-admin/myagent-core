@@ -10,7 +10,7 @@ const HELP_LINES = [
   "",
   "help.welcome",
   "",
-  "help.lobster_burger_management",
+  "help.agent_burger_management",
   "help.list_desc",
   "help.new_desc",
   "help.schedules_desc",
@@ -18,7 +18,7 @@ const HELP_LINES = [
   "help.autoupdate_desc",
   "help.check_desc",
   "",
-  "help.lobster_management",
+  "help.agent_management",
   "help.current_desc",
   "help.status_desc",
   "help.edit_desc",
@@ -34,8 +34,8 @@ const HELP_LINES = [
 
 const SECTION_HEADERS = new Set([
   "help.title",
-  "help.lobster_burger_management",
-  "help.lobster_management",
+  "help.agent_burger_management",
+  "help.agent_management",
 ]);
 
 export function buildHelpText(repoFullName, lang) {

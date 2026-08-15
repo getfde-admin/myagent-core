@@ -1,4 +1,4 @@
-# altShiftClawCore 系统架构报告
+# myAgentCore 系统架构报告
 
 > **Phase R/S/T 从头重写与深度审计 — 完整逆向工程报告**
 > 分支：`phase-r/refactor` | 日期：2026-07-30
@@ -8,7 +8,7 @@
 
 ## 一、项目概述
 
-altShiftClawCore 是一个部署在 **Cloudflare Workers** 上的 Telegram Bot + GitHub 集成系统。它将 GitHub Issues 作为「龙虾（Lobster）」任务单元，通过 Telegram 统一交互——创建任务、编辑配置、安装技能/模板、排程触发、媒体转送、AI 工作流派工等。
+myAgentCore 是一个部署在 **Cloudflare Workers** 上的 Telegram Bot + GitHub 集成系统。它将 GitHub Issues 作为「Agent（Agent）」任务单元，通过 Telegram 统一交互——创建任务、编辑配置、安装技能/模板、排程触发、媒体转送、AI 工作流派工等。
 
 **旧代码**是 20,195 行的 esbuild 混淆 bundle（已归档到 `src-legacy/`），无法维护。**Phase R** 将其从头重写为干净的模块化源码（现为 `src/`），经过 4 轮深度审计（18 个并行 Agent）、Phase S 逐线 Shadow-Diff 行为对等测试、Phase T 活跃路径深度逆向、Phase U 端到端 full-chain 验证、Phase V relay 子系统完整重写、以及 Phase W 实地真凭证 smoke，修复 132 项行为差异，达到功能 100% 对等。2026-08-03 正式 swap 完成。
 
@@ -154,7 +154,7 @@ flowchart LR
         R1["GET / → 健康检查"]:::route
         R2["GET /health → 健康检查"]:::route
         R3["POST /github/webhook → GitHub 签名验证"]:::route
-        R4["GET /api/active-issue → 查询活跃龙虾"]:::route
+        R4["GET /api/active-issue → 查询活跃Agent"]:::route
         R5["POST * → Telegram Webhook"]:::route
     end
 
@@ -254,11 +254,11 @@ flowchart TB
     end
 
     subgraph "自动初始化 (installation.created)"
-        AI1["创建第一个 Issue (龙虾)"]:::init
+        AI1["创建第一个 Issue (Agent)"]:::init
         AI2["创建 orphan 分支 issue-N"]:::init
         AI3["写入 workflow yml"]:::init
         AI4["D1 记录 issue_metadata"]:::init
-        AI5["设置 INIT_GITHUB_CLAW=false<br/>Repo Variable"]:::init
+        AI5["设置 INIT_GITHUB_AGENT=false<br/>Repo Variable"]:::init
         AI6["发送欢迎消息到 Telegram"]:::init
     end
 
@@ -313,7 +313,7 @@ flowchart TB
 
     subgraph "派工执行"
         D1["提取 requestTelegramMeta"]:::exec
-        D2["创建 progress comment<br/>(githubclaw-brain-result 标记)"]:::exec
+        D2["创建 progress comment<br/>(githubagent-brain-result 标记)"]:::exec
         D3["构建 dispatch inputs<br/>(issue_number, comment_id, event_source...)"]:::exec
         D4["createWorkflowDispatch<br/>→ issue-N.yml"]:::exec
     end
@@ -675,6 +675,6 @@ pie title 审计严重性分布
 - **LINE Bot**：完整配置流程 + 验证 + 部署 + post-install
 - **媒体转送**：单条 + 相册 (`Vs` body 结构化对齐) + git 上传 + jsonl 记录 + 无分支降级
 - **状态卡片**：7 路并行数据采集 + MarkdownV2 渲染 + 运行状态检测
-- **Auto-Init 自动初始化**：首个 Lobster 创建、orphan 分支 sync、D1 元数据持久化与 `INIT_GITHUB_CLAW` 状态同步
+- **Auto-Init 自动初始化**：首个 Agent 创建、orphan 分支 sync、D1 元数据持久化与 `INIT_GITHUB_AGENT` 状态同步
 
 **代码现在可以被拥有、理解和修改。** 旧 bundle 的「改一点坏一片」连锁脆弱性已彻底消除，并通过自动化 guardrails 与 shadow-diff 测试护航。

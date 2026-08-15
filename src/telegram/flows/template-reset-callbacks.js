@@ -33,7 +33,7 @@ export function registerTemplateResetCallbacks(composer) {
       if (Array.isArray(data)) templates = data.filter((d) => d.type === "dir").map((d) => d.name);
     } catch {}
     await ctx.answerCallbackQuery(t("core.resetTemplateAnswer", {}, lang));
-    const target = title ? t("core.lobsterLabelWithTitle", { number: n, title }, lang) : t("core.lobsterLabel", { number: n }, lang);
+    const target = title ? t("core.agentLabelWithTitle", { number: n, title }, lang) : t("core.agentLabel", { number: n }, lang);
     const text = `${t("core.resetTemplateSelect", { target }, lang)}\n${t("core.resetTemplateWarning", {}, lang)}`;
     const kb = new InlineKeyboard();
     for (const tpl of templates.slice(0, 20)) {

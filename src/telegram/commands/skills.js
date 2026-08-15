@@ -1,6 +1,6 @@
 // commands/skills.js — /skills 命令（入口）
 // 行为对齐旧 bundle Il（L12628-12677）。
-// R7 阶段：实现入口（active-lobster gate + 技能目录 fetch + 已装列表 + 选择键盘）。
+// R7 阶段：实现入口（active-agent gate + 技能目录 fetch + 已装列表 + 选择键盘）。
 // 多步 callback flow（env 收集 + confirm_install + dispatch）在后续子批次接入。
 
 import { t, glang } from "../../i18n/index.js";
@@ -34,12 +34,12 @@ async function listInstalledSkills(octokit, owner, repo, issueNumber) {
   }
 }
 
-// 远端技能目录（bs L5938：从 altShiftClawToolkit:main/skills 拉）
+// 远端技能目录（bs L5938：从 myAgentToolkit:main/skills 拉）
 async function fetchRemoteSkillCatalog(config) {
   if (catalogCache !== null && Date.now() - catalogCacheTime < CATALOG_TTL) {
     return catalogCache;
   }
-  const url = "https://api.github.com/repos/jeffsia-blacksmith/altShiftClawToolkit/contents/skills?ref=main";
+  const url = "https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/skills?ref=main";
   try {
     const resp = await fetch(url, {
       headers: {
@@ -72,7 +72,7 @@ export async function handleSkillsCommand(ctx) {
     if (!chatId) return;
     const active = await getActiveIssue(store, chatId);
     if (!active) {
-      await ctx.reply(t("core.noActiveLobsterSelected", {}, lang));
+      await ctx.reply(t("core.noActiveAgentSelected", {}, lang));
       return;
     }
     try {
@@ -113,7 +113,7 @@ export async function handleSkillsCommand(ctx) {
       if (page > 0) kb.text(t("kb.prevPage", {}, lang), `skills_page:${page - 1}`);
       if (start + pageSize < catalog.length) kb.text(t("kb.nextPage", {}, lang), `skills_page:${page + 1}`);
       kb.row().text(t("kb.cancel", {}, lang), "skills_cancel:0");
-      const target = issueTitle ? `🦞 ${issueTitle} #${active}` : `🦞 #${active}`;
+      const target = issueTitle ? `🤖 ${issueTitle} #${active}` : `🤖 #${active}`;
       await ctx.reply(t("skills.select_install", { target }, lang), { reply_markup: kb });
     } catch (e) {
       logError("log.command.skillsListFailed", { error: e instanceof Error ? e.message : String(e) });

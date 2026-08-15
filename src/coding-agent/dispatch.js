@@ -8,8 +8,8 @@ import { logInfo } from "../i18n/log.js";
 // ai/meta markers（对齐 il/en markers — old bundle il L6561-6563）
 // Skip: brain-result, tool-run, line-meta — NOT telegram-meta (human comments carry telegram-meta)
 const SYSTEM_MARKERS = [
-  /<!--\s*githubclaw-brain-result:/,
-  /<!--\s*githubclaw-tool-run:/,
+  /<!--\s*githubagent-brain-result:/,
+  /<!--\s*githubagent-tool-run:/,
   /<!--\s*line-meta:/,
 ];
 
@@ -42,7 +42,7 @@ function isScheduleFlowRecord(body) {
 }
 
 function mediaStage(body) {
-  const m = body?.match(/<!--\s*githubclaw-media-meta:\s*(\{[\s\S]*?\})\s*-->/);
+  const m = body?.match(/<!--\s*githubagent-media-meta:\s*(\{[\s\S]*?\})\s*-->/);
   if (!m) return null;
   try {
     return JSON.parse(m[1]).stage ?? null;
@@ -120,12 +120,12 @@ function buildDispatchInputs({ issueNumber, progressCommentId, userCommentId, is
   };
 }
 
-// pl：progress comment body（含 githubclaw-brain-result footer）
+// pl：progress comment body（含 githubagent-brain-result footer）
 function buildProgressCommentBody(userMessage, requestTelegramMeta = null) {
   const trimmed = typeof userMessage === "string" ? userMessage.trim() : "";
-  const meta = { source: "githubclaw-worker-brain" };
+  const meta = { source: "githubagent-worker-brain" };
   if (requestTelegramMeta) meta.requestTelegramMeta = requestTelegramMeta;
-  const footer = `<!-- githubclaw-brain-result: ${JSON.stringify(meta)} -->`;
+  const footer = `<!-- githubagent-brain-result: ${JSON.stringify(meta)} -->`;
   return [trimmed, footer].filter(Boolean).join("\n\n");
 }
 

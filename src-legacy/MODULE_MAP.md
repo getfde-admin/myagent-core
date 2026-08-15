@@ -41,7 +41,7 @@
 ## 路由（fetch handler 入口）
 | 路径 | 用途 |
 |---|---|
-| `/health` | 健康检查（deploy workflow poll，期望 `{ok:true,service:"githubclaw-core"}`） |
+| `/health` | 健康检查（deploy workflow poll，期望 `{ok:true,service:"githubagent-core"}`） |
 | `/github/webhook` | GitHub App webhook 接收 |
 | `/telegram/webhook` | Telegram webhook（binding `TELEGRAM_WEBHOOK_PATH`） |
 | `/api`, `/api/graphql`, `/graphql` | 内部 API / GraphQL |

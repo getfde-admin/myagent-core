@@ -4,10 +4,10 @@
 //   node release.mjs <new-version>
 //
 // 版本必须是 semver（MAJOR.MINOR.PATCH，可选 -prerelease）。
-// 会同步更新 src/config.js、package.json、github-claw-worker-package.json，
+// 会同步更新 src/config.js、package.json、github-agent-worker-package.json，
 // 在 main 上提交一次 "chore(release): vX.Y.Z"，并创建 annotated tag vX.Y.Z。
 //
-// 注意：github-claw-worker-package.json 的 revision 字段不在此处改动，
+// 注意：github-agent-worker-package.json 的 revision 字段不在此处改动，
 // 它由 .github/workflows/publish-package.yml 发布时用 git SHA 覆盖。
 
 import { execSync } from "node:child_process";
@@ -87,12 +87,12 @@ if (lock.packages && lock.packages[""]) lock.packages[""].version = nextVersion;
 writeJson("package-lock.json", lock);
 
 // ---- bump manifest version (NOT revision) ----
-const manifest = readJson("github-claw-worker-package.json");
+const manifest = readJson("github-agent-worker-package.json");
 manifest.version = nextVersion;
-writeJson("github-claw-worker-package.json", manifest);
+writeJson("github-agent-worker-package.json", manifest);
 
 // ---- commit + tag ----
-execSync("git add src/config.js package.json package-lock.json github-claw-worker-package.json", {
+execSync("git add src/config.js package.json package-lock.json github-agent-worker-package.json", {
   cwd: root,
   stdio: "inherit",
 });

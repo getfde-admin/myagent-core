@@ -1,5 +1,5 @@
 // telegram/sync-commands.js — 启动时把斜杠命令菜单（☰ / /）同步到 Telegram。
-// 命令与描述都从 i18n 的 help.*_desc 键派生，因此会跟随 CLAW_LANGUAGE 自动本地化，
+// 命令与描述都从 i18n 的 help.*_desc 键派生，因此会跟随 AGENT_LANGUAGE 自动本地化，
 // 新增命令只需在 help 描述里补一行。每次 Worker 实例只同步一次（serverless 每次
 // 请求都会重建 bot，用模块级 flag 去重）。
 //

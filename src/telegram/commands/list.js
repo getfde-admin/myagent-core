@@ -1,6 +1,6 @@
 // commands/list.js — /list 命令
 // 行为对齐旧 bundle Va.command("list")（L12171-12218）+ Do(issues)（L4506-4507）。
-// 护栏 #5（空 issues）→ reply core.noLobstersYet；护栏 #6（1 issue）→ 键盘含 #7。
+// 护栏 #5（空 issues）→ reply core.noAgentsYet；护栏 #6（1 issue）→ 键盘含 #7。
 
 import { t } from "../../i18n/index.js";
 import { logError } from "../../i18n/log.js";
@@ -31,7 +31,7 @@ function buildActiveLine(ctx, activeNum, issues) {
   if (found) {
     return ctx.t("core.currentActive", {
       number: found.number,
-      title: found.title || ctx.t("core.unnamedLobster"),
+      title: found.title || ctx.t("core.unnamedAgent"),
     });
   }
   return ctx.t("core.currentActiveNotFound", { number: activeNum });
@@ -50,13 +50,13 @@ export function registerList(composer) {
       if (issues.length === 0) {
         if (chatId) await clearMenuState(store, chatId);
         const text = activeLine
-          ? `${activeLine}\n${ctx.t("core.noLobstersYet")}`
-          : ctx.t("core.noLobstersYet");
+          ? `${activeLine}\n${ctx.t("core.noAgentsYet")}`
+          : ctx.t("core.noAgentsYet");
         await ctx.reply(text);
         return;
       }
 
-      const header = [activeLine, ctx.t("core.yourLobsters")].filter(Boolean).join("\n");
+      const header = [activeLine, ctx.t("core.yourAgents")].filter(Boolean).join("\n");
       const keyboard = switchIssueKeyboard(issues);
       const sent = await ctx.reply(header, { reply_markup: keyboard });
       if (chatId && sent.message_id) {

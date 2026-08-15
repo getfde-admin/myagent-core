@@ -39,7 +39,7 @@ export function createBot({ config, services }) {
     client: { apiRoot: config.telegram.apiBaseUrl ?? "https://api.telegram.org" },
   });
 
-  // 启动时同步斜杠命令菜单（☰ / /）；命令描述由 i18n 生成，跟随 CLAW_LANGUAGE。
+  // 启动时同步斜杠命令菜单（☰ / /）；命令描述由 i18n 生成，跟随 AGENT_LANGUAGE。
   syncBotCommands(bot, config);
 
   // 1. AccessGuard — 对齐 Pd（L12010-12049）

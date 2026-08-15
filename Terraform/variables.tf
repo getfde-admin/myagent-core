@@ -15,57 +15,57 @@ variable "workers_dev_subdomain" {
 }
 
 variable "github_owner" {
-  description = "GitHub repository owner used by altShiftClawCoreWorker."
+  description = "GitHub repository owner used by myAgentCoreWorker."
   type        = string
 }
 
 variable "github_repo" {
-  description = "GitHub repository name used by altShiftClawCoreWorker."
+  description = "GitHub repository name used by myAgentCoreWorker."
   type        = string
 }
 
-variable "github_claw_worker_name_override" {
+variable "github_agent_worker_name_override" {
   description = "Optional existing Worker name override used to preserve already deployed Workers."
   type        = string
   default     = ""
 }
 
 variable "profile_name" {
-  description = "Profile display name used by altShiftClawCoreWorker."
+  description = "Profile display name used by myAgentCoreWorker."
   type        = string
 }
 
 variable "personality" {
-  description = "Profile personality used by altShiftClawCoreWorker."
+  description = "Profile personality used by myAgentCoreWorker."
   type        = string
 }
 
-variable "claw_language" {
-  description = "Default reply language for altShiftClawCoreWorker (e.g. zh-CN, en)."
+variable "agent_language" {
+  description = "Default reply language for myAgentCoreWorker (e.g. zh-CN, en)."
   type        = string
   default     = "zh-CN"
 }
 
-variable "claw_sys_github_token" {
-  description = "System GitHub token used by altShiftClawCoreWorker."
+variable "agent_sys_github_token" {
+  description = "System GitHub token used by myAgentCoreWorker."
   type        = string
   sensitive   = true
 }
 
 variable "github_webhook_secret" {
-  description = "GitHub webhook secret used by altShiftClawCoreWorker."
+  description = "GitHub webhook secret used by myAgentCoreWorker."
   type        = string
   sensitive   = true
 }
 
 variable "telegram_bot_token" {
-  description = "Telegram bot token used by altShiftClawCoreWorker."
+  description = "Telegram bot token used by myAgentCoreWorker."
   type        = string
   sensitive   = true
 }
 
 variable "telegram_webhook_secret" {
-  description = "Telegram webhook secret used by altShiftClawCoreWorker."
+  description = "Telegram webhook secret used by myAgentCoreWorker."
   type        = string
   sensitive   = true
 }
@@ -108,8 +108,8 @@ variable "debug_mode" {
   default     = false
 }
 
-variable "init_github_claw" {
-  description = "Whether to initialize altShiftClaw bootstrap flow."
+variable "init_github_agent" {
+  description = "Whether to initialize myAgent bootstrap flow."
   type        = bool
   default     = true
 }

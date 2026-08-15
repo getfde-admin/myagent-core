@@ -18,16 +18,16 @@ export function registerClose(composer) {
 
       if (issues.length === 0) {
         if (chatId) await clearMenuState(store, chatId);
-        await ctx.reply(ctx.t("core.closeNoOpenLobsters"));
+        await ctx.reply(ctx.t("core.closeNoOpenAgents"));
         return;
       }
       if (issues.length === 1) {
         if (chatId) await clearMenuState(store, chatId);
-        await ctx.reply(ctx.t("core.closeOnlyOneLobsterLeft"));
+        await ctx.reply(ctx.t("core.closeOnlyOneAgentLeft"));
         return;
       }
 
-      const header = [ctx.t("core.closeWhichLobster"), "", ctx.t("core.closeConfirmHint")].join("\n");
+      const header = [ctx.t("core.closeWhichAgent"), "", ctx.t("core.closeConfirmHint")].join("\n");
       const keyboard = closeIssueKeyboard(issues);
       const sent = await ctx.reply(header, { reply_markup: keyboard });
       if (chatId && sent.message_id) {

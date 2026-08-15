@@ -1,4 +1,4 @@
-// telegram/status-card.js — 龙虾信息卡（ks/Hp/gp/qd/u_）
+// telegram/status-card.js — Agent信息卡（ks/Hp/gp/qd/u_）
 // 行为对齐旧 bundle ks（L6464）+ Hp（L6259）+ gp（L5187）+ qd（L4588）+ u_（L6477）。
 // 7 路并行 octokit/D1 调用 → MarkdownV2 信息卡 + action keyboard。
 
@@ -207,7 +207,7 @@ function buildStatusCardText(e, lang) {
     }
     lines.push(`\\- *${O(t("core.infoCardStatus", {}, L))}*: ${statusText}`);
   } else {
-    lines.push(O("No workflow configured yet. You can run /edit to reset the template and enable the Lobster workflow."));
+    lines.push(O("No workflow configured yet. You can run /edit to reset the template and enable the Agent workflow."));
   }
   return lines.join("\n");
 }

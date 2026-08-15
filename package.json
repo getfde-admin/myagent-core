@@ -1,9 +1,9 @@
 {
-  "name": "altshift-claw-core",
+  "name": "altshift-agent-core",
   "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "altShiftClawCore worker package — editable src/ + esbuild rebuild to GitHubClawCore/index.js",
+  "description": "myAgentCore worker package — editable src/ + esbuild rebuild to GitHubAgentCore/index.js",
   "scripts": {
     "build": "node build.mjs",
     "check": "node build.mjs --check",

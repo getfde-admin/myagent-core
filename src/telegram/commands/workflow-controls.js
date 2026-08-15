@@ -1,6 +1,6 @@
 // commands/workflow-controls.js — /enable /disable /workflow
 // 行为对齐旧 bundle Fn.command("enable"/"disable"/"workflow")（L13196-13275）。
-// 三命令共用 active-lobster 前置 + actions.listRepoWorkflows 查 issue-<n>.yml。
+// 三命令共用 active-agent 前置 + actions.listRepoWorkflows 查 issue-<n>.yml。
 
 import { t, glang } from "../../i18n/index.js";
 import { getActiveIssue } from "../../db/kv-state.js";
@@ -29,7 +29,7 @@ export function registerWorkflowControls(composer) {
     const chatId = ctx.chat?.id;
     const active = chatId ? await getActiveIssue(store, chatId) : null;
     if (!active) {
-      await ctx.reply(O(t("core.noActiveLobsterSelected", {}, lang)), He);
+      await ctx.reply(O(t("core.noActiveAgentSelected", {}, lang)), He);
       return;
     }
     const wfFile = issueWorkflowFile(active);
@@ -58,7 +58,7 @@ export function registerWorkflowControls(composer) {
     const chatId = ctx.chat?.id;
     const active = chatId ? await getActiveIssue(store, chatId) : null;
     if (!active) {
-      await ctx.reply(O(t("core.noActiveLobsterSelected", {}, lang)), He);
+      await ctx.reply(O(t("core.noActiveAgentSelected", {}, lang)), He);
       return;
     }
     const wfFile = issueWorkflowFile(active);
@@ -87,7 +87,7 @@ export function registerWorkflowControls(composer) {
     const chatId = ctx.chat?.id;
     const active = chatId ? await getActiveIssue(store, chatId) : null;
     if (!active) {
-      await ctx.reply(O(t("core.noActiveLobsterSelected", {}, lang)), He);
+      await ctx.reply(O(t("core.noActiveAgentSelected", {}, lang)), He);
       return;
     }
     const wfFile = issueWorkflowFile(active);

@@ -5,6 +5,6 @@
 export function registerVersion(composer) {
   composer.command("version", async (ctx) => {
     const { config } = ctx.services;
-    await ctx.reply(`🦞 altShiftClawCore v${config.version}`);
+    await ctx.reply(`🤖 myAgentCore v${config.version}`);
   });
 }

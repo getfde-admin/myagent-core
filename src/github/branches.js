@@ -154,12 +154,12 @@ async function readTemplateTree(octokit, owner, repo, template) {
   return !obj || obj.__typename !== "Tree" ? null : obj;
 }
 // hm — 递归展平 Tree entries 为 {path, content}（对齐 L6820-6840）
-function flattenTemplateTree(entries, prefix, personality, clawLanguage) {
+function flattenTemplateTree(entries, prefix, personality, agentLanguage) {
   if (!entries?.length) return [];
   const out = [];
   const langLabel =
-    clawLanguage === "zh-CN" ? "Simplified Chinese (China)" :
-    clawLanguage === "ms"   ? "Malay" :
+    agentLanguage === "zh-CN" ? "Simplified Chinese (China)" :
+    agentLanguage === "ms"   ? "Malay" :
     "English";
   for (const s of entries) {
     const fullPath = prefix ? `${prefix}/${s.name}` : s.name;
@@ -174,15 +174,15 @@ function flattenTemplateTree(entries, prefix, personality, clawLanguage) {
     }
     if (s.type === "tree" && s.object?.__typename === "Tree") {
       if (!Array.isArray(s.object.entries)) throw new Error(t("templates.nestedTooDeep", { path: fullPath }, glang()));
-      out.push(...flattenTemplateTree(s.object.entries, fullPath, personality, clawLanguage));
+      out.push(...flattenTemplateTree(s.object.entries, fullPath, personality, agentLanguage));
     }
   }
   return out;
 }
-export async function readTemplateFiles(octokit, owner, repo, template, personality = "", clawLanguage = "en") {
+export async function readTemplateFiles(octokit, owner, repo, template, personality = "", agentLanguage = "en") {
   const tree = await readTemplateTree(octokit, owner, repo, template);
   if (!tree) throw Object.assign(new Error(t("templates.notInstalled", { name: template }, glang())), { code: "TEMPLATE_NOT_INSTALLED" });
-  return flattenTemplateTree(tree.entries, "", personality, clawLanguage);
+  return flattenTemplateTree(tree.entries, "", personality, agentLanguage);
 }
 
 // Pn — 创建 orphan 分支
@@ -211,9 +211,9 @@ export async function createOrphanBranch(octokit, owner, repo, branchName, files
 }
 
 // Q_ — 替换 workflow yml 中的 name 行
-const WORKFLOW_NAME_RE = /^(\s*name:\s*)(['"]?)(?:🦞\s+)?执行小龙虾任务(?:\s+#[\w\d]+)?\2(\s*)$/m;
+const WORKFLOW_NAME_RE = /^(\s*name:\s*)(['"]?)(?:🤖\s+)?执行小Agent任务(?:\s+#[\w\d]+)?\2(\s*)$/m;
 function rewriteWorkflowName(content, issueNumber) {
-  return content.replace(WORKFLOW_NAME_RE, `$1'🦞 Execute Lobster Task #${issueNumber}'$3`);
+  return content.replace(WORKFLOW_NAME_RE, `$1'🤖 Execute Agent Task #${issueNumber}'$3`);
 }
 
 // Sr — 写 .github/workflows/issue-<n>.yml 到 main 分支
@@ -281,7 +281,7 @@ export async function upsertIssueTemplate(d1, repo, issueNumber, template) {
   return row;
 }
 
-// Os create finalize — 完整建龙虾流程
+// Os create finalize — 完整建Agent流程
 export async function osCreateFinalize(ctx, state) {
   const { octokit, store, d1, config } = ctx.services;
   const { owner, repo, repoFullName } = config.github;
@@ -316,7 +316,7 @@ export async function osCreateFinalize(ctx, state) {
   return { issue: { number: issueNumber, title: created.title }, mode: "create" };
 }
 
-// Os edit finalize — 编辑现有龙虾（对齐旧 bundle Os edit L7424-7486）
+// Os edit finalize — 编辑现有Agent（对齐旧 bundle Os edit L7424-7486）
 export async function osEditFinalize(ctx, state) {
   const { octokit, store, d1, config } = ctx.services;
   const { owner, repo, repoFullName } = config.github;

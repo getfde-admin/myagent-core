@@ -59,10 +59,10 @@ export function buildConfig(env) {
   }
   return {
     language:
-      typeof e.CLAW_LANGUAGE === "string" && e.CLAW_LANGUAGE.trim() ? e.CLAW_LANGUAGE.trim() : "en",
+      typeof e.AGENT_LANGUAGE === "string" && e.AGENT_LANGUAGE.trim() ? e.AGENT_LANGUAGE.trim() : "en",
     profileName: optString(e, "PROFILE_NAME") ?? githubRepo,
     personality: optString(e, "PERSONALITY") ?? "",
-    initGitHubClaw: optBool(e, "INIT_GITHUB_CLAW"),
+    initGitHubAgent: optBool(e, "INIT_GITHUB_AGENT"),
     telegram: {
       botToken: optString(e, "TELEGRAM_BOT_TOKEN"),
       webhookSecret: optString(e, "TELEGRAM_WEBHOOK_SECRET"),
@@ -75,7 +75,7 @@ export function buildConfig(env) {
       allowedFromId: optInt(e, "TELEGRAM_ALLOWED_FROM_ID"),
     },
     github: {
-      token: optString(e, "CLAW_SYS_GITHUB_TOKEN") ?? optString(e, "GITHUB_TOKEN"),
+      token: optString(e, "AGENT_SYS_GITHUB_TOKEN") ?? optString(e, "GITHUB_TOKEN"),
       webhookSecret: optString(e, "GITHUB_WEBHOOK_SECRET"),
       owner: githubOwner,
       repo: githubRepo,
@@ -85,7 +85,7 @@ export function buildConfig(env) {
           ? e.GITHUB_API_BASE_URL.trim()
           : DEFAULT_API_BASE,
       apiVersion: "2022-11-28",
-      userAgent: "altShiftClawCore/1.0.0",
+      userAgent: "myAgentCore/1.0.0",
       webhookPath: "/github/webhook",
     },
     scheduleStorage: { database: optBinding(e, "SCHEDULES_DB") },

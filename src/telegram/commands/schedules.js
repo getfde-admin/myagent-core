@@ -15,11 +15,11 @@ function formatLocalTime(iso, lang) {
   return d.toLocaleString(lang === "zh-CN" ? "zh-CN" : "en", { timeZone: "Asia/Kuala_Lumpur" });
 }
 
-// Ml(r) — issue 标题或 lobsterHash
+// Ml(r) — issue 标题或 agentHash
 function scheduleItemLabel(r, issueTitle, lang) {
   return issueTitle
     ? `${issueTitle} (#${r.issueNumber})`
-    : t("core.lobsterHash", { issueNumber: r.issueNumber }, lang);
+    : t("core.agentHash", { issueNumber: r.issueNumber }, lang);
 }
 
 // $n(r) — ruleType | prompt 截断

@@ -7,7 +7,7 @@ import { t, glang } from "../i18n/index.js";
 // 当 workflow !acceptsDispatch 且 branchExists 时回复
 export function buildRestingReply(name, lang) {
   const L = lang ?? glang();
-  const displayName = (typeof name === "string" && name.trim()) ? name.trim() : t("core.unnamedLobster", {}, L);
+  const displayName = (typeof name === "string" && name.trim()) ? name.trim() : t("core.unnamedAgent", {}, L);
   return [
     t("core.restingMessage1", { name: displayName }, L),
     t("core.restingMessage2", {}, L),
@@ -153,9 +153,9 @@ export function inferWorkflowFailedReply(name, lang) {
   return t("core.inferWorkflowFailed", { name }, lang ?? glang());
 }
 
-// skills.targetLobsterFallback
-export function skillsTargetLobsterFallbackReply(lang) {
-  return t("skills.targetLobsterFallback", {}, lang ?? glang());
+// skills.targetAgentFallback
+export function skillsTargetAgentFallbackReply(lang) {
+  return t("skills.targetAgentFallback", {}, lang ?? glang());
 }
 
 // templates.* edge
@@ -198,8 +198,8 @@ export function newFlowErrorTemplateReadFailedReply(name, lang) {
 export function newFlowTemplateNoLongerExistsReply(lang) {
   return t("newFlow.templateNoLongerExists", {}, lang ?? glang());
 }
-export function newFlowTemplateNotInLobsterReply(template, lang) {
-  return t("newFlow.templateNotInLobster", { template }, lang ?? glang());
+export function newFlowTemplateNotInAgentReply(template, lang) {
+  return t("newFlow.templateNotInAgent", { template }, lang ?? glang());
 }
 export function newFlowTemplateListReadFailedRetryReply(lang) {
   return t("newFlow.templateListReadFailedRetry", {}, lang ?? glang());
@@ -248,8 +248,8 @@ export function scheduleFlowFailedUnderstandReply(lang) {
 export function scheduleFlowFallbackIssueTitleReply(lang) {
   return t("schedule.flow.fallbackIssueTitle", {}, lang ?? glang());
 }
-export function scheduleFlowLobsterClosedDeleteOnlyReply(lang) {
-  return t("schedule.flow.lobsterClosedDeleteOnly", {}, lang ?? glang());
+export function scheduleFlowAgentClosedDeleteOnlyReply(lang) {
+  return t("schedule.flow.agentClosedDeleteOnly", {}, lang ?? glang());
 }
 export function scheduleFlowParseAmbiguousFallbackReply(lang) {
   return t("schedule.flow.parseAmbiguousFallback", {}, lang ?? glang());
@@ -315,8 +315,8 @@ export function kbDefaultReplyReply(lang) {
 }
 
 // line.* edge
-export function lineConfirmLobsterReply(lang) {
-  return t("line.confirm_lobster", {}, lang ?? glang());
+export function lineConfirmAgentReply(lang) {
+  return t("line.confirm_agent", {}, lang ?? glang());
 }
 export function lineConfirmReplyMsgReply(lang) {
   return t("line.confirm_reply_msg", {}, lang ?? glang());
@@ -348,8 +348,8 @@ export function lineErrorChannelIdRequiredReply(lang) {
 export function lineErrorIssueNumberFormatReply(lang) {
   return t("line.error_issue_number_format", {}, lang ?? glang());
 }
-export function lineErrorLobsterNotFoundReply(number, lang) {
-  return t("line.error_lobster_not_found", { number }, lang ?? glang());
+export function lineErrorAgentNotFoundReply(number, lang) {
+  return t("line.error_agent_not_found", { number }, lang ?? glang());
 }
 export function lineErrorTimezoneFormatReply(lang) {
   return t("line.error_timezone_format", {}, lang ?? glang());
@@ -592,19 +592,19 @@ export function corePleaseUseCommandReply(command, lang) {
 }
 
 // menu.* — command menu labels
-export function menuActiveLobsterReply(name, lang) {
-  return t("menu.active_lobster", { name }, lang ?? glang());
+export function menuActiveAgentReply(name, lang) {
+  return t("menu.active_agent", { name }, lang ?? glang());
 }
-export function menuCloseLobsterReply(lang) {
-  return t("menu.close_lobster", {}, lang ?? glang());
+export function menuCloseAgentReply(lang) {
+  return t("menu.close_agent", {}, lang ?? glang());
 }
-export function menuNewLobsterReply(lang) {
-  return t("menu.new_lobster", {}, lang ?? glang());
+export function menuNewAgentReply(lang) {
+  return t("menu.new_agent", {}, lang ?? glang());
 }
 
-// kb.lobsterFallbackName
-export function kbLobsterFallbackNameReply(lang) {
-  return t("kb.lobsterFallbackName", {}, lang ?? glang());
+// kb.agentFallbackName
+export function kbAgentFallbackNameReply(lang) {
+  return t("kb.agentFallbackName", {}, lang ?? glang());
 }
 
 // line.cancelled_alert / deploy_workflow_title / setup_failed
@@ -623,12 +623,12 @@ export function systemErrorStartReply(lang) {
   return t("system.error_start", {}, lang ?? glang());
 }
 
-// skills.confirmInstallTo / skills.target_lobster_fallback
+// skills.confirmInstallTo / skills.target_agent_fallback
 export function skillsConfirmInstallToReply(skillName, target, lang) {
   return t("skills.confirmInstallTo", { skillName, target }, lang ?? glang());
 }
-export function skillsTargetLobsterFallbackReply2(lang) {
-  return t("skills.target_lobster_fallback", {}, lang ?? glang());
+export function skillsTargetAgentFallbackReply2(lang) {
+  return t("skills.target_agent_fallback", {}, lang ?? glang());
 }
 
 // newFlow.confirmInstallTo / editStepWorkflowEnabled / envValueRequired / envsSet / notInstalled / readFailed / setEnvFailed

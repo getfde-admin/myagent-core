@@ -25,8 +25,8 @@ async function clearSkillState(store, chatId) {
 function targetLabel(state, lang) {
   const L = lang ?? glang();
   return state.issueTitle
-    ? `🦞 ${escapeMarkdownV2(state.issueTitle)} \\#${state.issueNumber}`
-    : `🦞 \\#${state.issueNumber}`;
+    ? `🤖 ${escapeMarkdownV2(state.issueTitle)} \\#${state.issueNumber}`
+    : `🤖 \\#${state.issueNumber}`;
 }
 
 // 键盘 builders
@@ -88,7 +88,7 @@ function removeConfirmKeyboard(name, lang) {
 
 // 远端技能元数据 fetch
 async function fetchSkillMeta(config, skillName) {
-  const url = `https://api.github.com/repos/jeffsia-blacksmith/altShiftClawToolkit/contents/skills/${skillName}/githubclaw.json?ref=main`;
+  const url = `https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/skills/${skillName}/githubagent.json?ref=main`;
   const resp = await fetch(url, {
     headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": config.github.apiVersion, "User-Agent": config.github.userAgent },
   });
@@ -98,7 +98,7 @@ async function fetchSkillMeta(config, skillName) {
   return null;
 }
 async function fetchSkillsCatalog(config) {
-  const url = "https://api.github.com/repos/jeffsia-blacksmith/altShiftClawToolkit/contents/skills?ref=main";
+  const url = "https://api.github.com/repos/jeffsia-blacksmith/myAgentToolkit/contents/skills?ref=main";
   const resp = await fetch(url, {
     headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": config.github.apiVersion, "User-Agent": config.github.userAgent },
   });

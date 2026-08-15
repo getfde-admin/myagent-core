@@ -243,7 +243,7 @@ export const gh = {
       return { body: JSON.stringify({ data: { repository: { object: { __typename: "Tree", entries } } } }) };
     },
   }),
-  // POST /repos/{owner}/{repo}/issues (createIssue — auto-init first lobster)
+  // POST /repos/{owner}/{repo}/issues (createIssue — auto-init first agent)
   createIssue: (number = 1) => ({
     match: (url, { method }) => method === "POST" && /\/repos\/[^/]+\/[^/]+\/issues(\?|$)/.test(url),
     response: ({ body }) => {

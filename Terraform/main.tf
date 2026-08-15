@@ -10,27 +10,27 @@ data "cloudflare_d1_databases" "existing_schedules" {
 locals {
   github_owner_slug      = trim(replace(replace(lower(trimspace(var.github_owner)), "/[^a-z0-9-]+/", "-"), "/-+/", "-"), "-")
   github_repo_slug       = trim(replace(replace(lower(trimspace(var.github_repo)), "/[^a-z0-9-]+/", "-"), "/-+/", "-"), "-")
-  github_claw_name_parts = compact([local.github_owner_slug, local.github_repo_slug])
-  github_claw_name_base  = length(local.github_claw_name_parts) > 0 ? join("-", local.github_claw_name_parts) : "githubclaw"
-  github_claw_name_hash  = substr(sha256("${trimspace(var.github_owner)}\n${trimspace(var.github_repo)}"), 0, 8)
-  github_claw_name_short = trim(substr(local.github_claw_name_base, 0, 42), "-")
-  github_claw_short_base = length(local.github_claw_name_short) > 0 ? local.github_claw_name_short : "githubclaw"
-  github_claw_canonical_worker_name = (
-    length("${local.github_claw_name_base}-claw-worker") <= 63
-    ? "${local.github_claw_name_base}-claw-worker"
-    : "${local.github_claw_short_base}-claw-worker-${local.github_claw_name_hash}"
+  github_agent_name_parts = compact([local.github_owner_slug, local.github_repo_slug])
+  github_agent_name_base  = length(local.github_agent_name_parts) > 0 ? join("-", local.github_agent_name_parts) : "githubagent"
+  github_agent_name_hash  = substr(sha256("${trimspace(var.github_owner)}\n${trimspace(var.github_repo)}"), 0, 8)
+  github_agent_name_short = trim(substr(local.github_agent_name_base, 0, 42), "-")
+  github_agent_short_base = length(local.github_agent_name_short) > 0 ? local.github_agent_name_short : "githubagent"
+  github_agent_canonical_worker_name = (
+    length("${local.github_agent_name_base}-agent-worker") <= 63
+    ? "${local.github_agent_name_base}-agent-worker"
+    : "${local.github_agent_short_base}-agent-worker-${local.github_agent_name_hash}"
   )
-  github_claw_worker_name = (
-    trimspace(var.github_claw_worker_name_override) != ""
-    ? trimspace(var.github_claw_worker_name_override)
-    : local.github_claw_canonical_worker_name
+  github_agent_worker_name = (
+    trimspace(var.github_agent_worker_name_override) != ""
+    ? trimspace(var.github_agent_worker_name_override)
+    : local.github_agent_canonical_worker_name
   )
-  github_claw_script_path = "../index.js"
-  schedules_db_name       = "${local.github_claw_name_base}-claw-schedules"
+  github_agent_script_path = "../index.js"
+  schedules_db_name       = "${local.github_agent_name_base}-agent-schedules"
   schedules_db_result     = try(data.cloudflare_d1_databases.existing_schedules.result, [])
   schedules_db_uuid       = length(local.schedules_db_result) > 0 ? local.schedules_db_result[0].uuid : cloudflare_d1_database.schedules[0].uuid
 
-  github_claw_bindings = [
+  github_agent_bindings = [
     {
       name = "SCHEDULES_DB"
       type = "d1"
@@ -61,9 +61,9 @@ locals {
       text = var.personality
     },
     {
-      name = "CLAW_LANGUAGE"
+      name = "AGENT_LANGUAGE"
       type = "plain_text"
-      text = var.claw_language
+      text = var.agent_language
     },
     {
       name = "GITHUB_WEBHOOK_SECRET"
@@ -71,9 +71,9 @@ locals {
       text = var.github_webhook_secret
     },
     {
-      name = "CLAW_SYS_GITHUB_TOKEN"
+      name = "AGENT_SYS_GITHUB_TOKEN"
       type = "secret_text"
-      text = var.claw_sys_github_token
+      text = var.agent_sys_github_token
     },
     {
       name = "TELEGRAM_BOT_TOKEN"
@@ -116,9 +116,9 @@ locals {
       text = var.debug_mode ? "true" : "false"
     },
     {
-      name = "INIT_GITHUB_CLAW"
+      name = "INIT_GITHUB_AGENT"
       type = "plain_text"
-      text = var.init_github_claw ? "true" : "false"
+      text = var.init_github_agent ? "true" : "false"
     },
     {
       name = "TELEGRAM_API_BASE_URL"
@@ -150,9 +150,9 @@ resource "cloudflare_d1_database" "schedules" {
   }
 }
 
-resource "cloudflare_worker" "github_claw" {
+resource "cloudflare_worker" "github_agent" {
   account_id = var.cloudflare_account_id
-  name       = local.github_claw_worker_name
+  name       = local.github_agent_worker_name
 
   observability = {
     enabled            = true
@@ -170,36 +170,36 @@ resource "cloudflare_worker" "github_claw" {
   }
 }
 
-resource "cloudflare_worker_version" "github_claw" {
+resource "cloudflare_worker_version" "github_agent" {
   account_id         = var.cloudflare_account_id
-  worker_id          = cloudflare_worker.github_claw.id
+  worker_id          = cloudflare_worker.github_agent.id
   compatibility_date = "2026-03-09"
   compatibility_flags = ["nodejs_compat"]
   main_module        = "index.js"
-  bindings           = local.github_claw_bindings
+  bindings           = local.github_agent_bindings
 
   modules = [{
     name           = "index.js"
     content_type   = "application/javascript+module"
-    content_base64 = filebase64(local.github_claw_script_path)
+    content_base64 = filebase64(local.github_agent_script_path)
   }]
 }
 
-resource "cloudflare_workers_deployment" "github_claw" {
+resource "cloudflare_workers_deployment" "github_agent" {
   account_id  = var.cloudflare_account_id
-  script_name = cloudflare_worker.github_claw.name
+  script_name = cloudflare_worker.github_agent.name
   strategy    = "percentage"
 
   versions = [{
     percentage = 100
-    version_id = cloudflare_worker_version.github_claw.id
+    version_id = cloudflare_worker_version.github_agent.id
   }]
 }
 
-resource "cloudflare_workers_cron_trigger" "github_claw" {
+resource "cloudflare_workers_cron_trigger" "github_agent" {
   account_id  = var.cloudflare_account_id
-  script_name = cloudflare_worker.github_claw.name
-  depends_on  = [cloudflare_workers_deployment.github_claw]
+  script_name = cloudflare_worker.github_agent.name
+  depends_on  = [cloudflare_workers_deployment.github_agent]
 
   schedules = [{
     cron = "* * * * *"

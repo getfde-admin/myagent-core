@@ -54,7 +54,7 @@ export async function getLanguage(services) {
   let lang = null;
   if (services?.store) {
     try {
-      lang = await services.store.get("CLAW_LANGUAGE");
+      lang = await services.store.get("AGENT_LANGUAGE");
     } catch (err) {
       console.error("Error reading language from D1:", err);
     }

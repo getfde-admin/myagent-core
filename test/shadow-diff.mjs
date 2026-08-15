@@ -60,8 +60,8 @@ function baseEnv(overrides = {}) {
     TELEGRAM_API_BASE_URL: "https://api.telegram.org",
     TELEGRAM_WEBHOOK_PATH: "/telegram/webhook",
     TELEGRAM_MAX_MESSAGE_LENGTH: "4096",
-    CLAW_SYS_GITHUB_TOKEN: "ghp_fake",
-    CLAW_LANGUAGE: "en",
+    AGENT_SYS_GITHUB_TOKEN: "ghp_fake",
+    AGENT_LANGUAGE: "en",
     SCHEDULES_DB: makeD1(),
     ...overrides,
   };
@@ -183,7 +183,7 @@ const ALLOW = [
   },
   // v2 skips a redundant GET /actions/workflows fetch in the /llm no-active guard;
   // the user-visible Telegram reply is byte-identical. (Old fetched workflows
-  // speculatively even when it would early-return on "no active lobster".)
+  // speculatively even when it would early-return on "no active agent".)
   {
     label: "v2 skips redundant GET /actions/workflows in /llm no-active guard (reply identical)",
     test: (label, a, b) => label === "POST /llm (no active)" &&
@@ -220,7 +220,7 @@ const ALLOW = [
   // Normalise ISO ts in createIssue body; rest must match.
   {
     label: "auto-init ts nondeterminism (new Date().toISOString() runs sequentially) — normalized",
-    test: (label, a, b) => label === "installation.created → welcome + first lobster + autoInitCreated" &&
+    test: (label, a, b) => label === "installation.created → welcome + first agent + autoInitCreated" &&
       deepDiff(
         a.calls.map((c) => ({
           ...c,
@@ -370,7 +370,7 @@ await httpScenario("POST /workflow (no active)", guardedEnv, tgCmd(), tgReq(tgUp
 await httpScenario("POST /status", guardedEnv, tgCmd(), tgReq(tgUpdate("/status")), { expectCallsMin: 1 });
 await httpScenario("POST plain text (no active issue)", guardedEnv, tgCmd(), tgReq(tgUpdate("hello world")), { expectCallsMin: 1 });
 
-// active-lobster helpers: each call → fresh D1 with active-issue:111 = "7" pre-seeded
+// active-agent helpers: each call → fresh D1 with active-issue:111 = "7" pre-seeded
 const activeEnv = () => {
   const env = baseEnv({
     TELEGRAM_ALLOWED_FROM_ID: "111",
@@ -381,7 +381,7 @@ const activeEnv = () => {
 };
 const WF7 = { id: 42, path: ".github/workflows/issue-7.yml", state: "active", html_url: "https://github.com/test-owner/test-repo/actions/workflows/issue-7.yml" };
 
-console.log("\nshadow-diff: Telegram commands (active lobster, en)");
+console.log("\nshadow-diff: Telegram commands (active agent, en)");
 await httpScenario("POST /enable (active, wf found)", activeEnv,
   tgCmd([gh.workflows([WF7]), gh.workflowEnable()]), tgReq(tgUpdate("/enable")), { expectCallsMin: 2 });
 await httpScenario("POST /disable (active, wf found)", activeEnv,
@@ -439,7 +439,7 @@ await scheduledScenario("cron (1 due 'once' schedule) → createComment + artifa
 }, () => [gh.createComment([]), gh.createOrUpdateFile([]), gh.getContent({})], { expectCallsMin: 2 });
 
 // ── media relay (full chain) ────────────────────────────────────────────────
-console.log("\nshadow-diff: media relay (active lobster, en)");
+console.log("\nshadow-diff: media relay (active agent, en)");
 const ISSUE7 = { number: 7, title: "Test issue", state: "open", body: "" };
 // single photo, no branch → metadata-only comment (+ old resting reply via Js)
 // §6.2: old Ys(e, t_msg) body uses `t` (i18n function) instead of `t_msg` (file) →
@@ -474,15 +474,15 @@ const autoInitEnv = () => baseEnv({
   TELEGRAM_ALLOWED_FROM_ID: "111",
   TELEGRAM_ALLOWED_CHAT_ID: "111",
   TELEGRAM_CHAT_ID: "111",
-  INIT_GITHUB_CLAW: "true",
+  INIT_GITHUB_AGENT: "true",
 });
-await httpScenario("installation.created → welcome + first lobster + autoInitCreated", autoInitEnv,
+await httpScenario("installation.created → welcome + first agent + autoInitCreated", autoInitEnv,
   () => [
     tg.getMe(), tg.sendMessage([]),
     gh.createIssue(1),
     gh.graphql({
       "default": {
-        ".github/workflows/issue-N.yml": "name: 执行小龙虾任务 #0\non: push\n",
+        ".github/workflows/issue-N.yml": "name: 执行小Agent任务 #0\non: push\n",
         "prompt.md": "You are a helpful assistant.\n",
       },
     }),

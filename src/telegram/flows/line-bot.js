@@ -52,7 +52,7 @@ function confirmDetailLines(state, lang) {
     `\\- LINE Bot ID: \`${botId}\``,
     `\\- Channel ID: \`${channelId}\``,
     t("line.confirm_reply_msg", { value: replyMsg ? escapeMdV2(replyMsg) : t("line.none_label", {}, lang) }, lang),
-    t("line.confirm_lobster", { value: issueNum ? `\\#${escapeMdV2(issueNum)}` : t("line.auto_create_label", {}, lang) }, lang),
+    t("line.confirm_agent", { value: issueNum ? `\\#${escapeMdV2(issueNum)}` : t("line.auto_create_label", {}, lang) }, lang),
     t("line.confirm_timezone", { value: utcOffset }, lang),
   ].join("\n");
 }
@@ -291,7 +291,7 @@ export async function handleLineText(ctx) {
       const { owner, repo } = config.github;
       await octokit.rest.issues.get({ owner, repo, issue_number: issueNum });
     } catch {
-      await ctx.reply(t("line.error_lobster_not_found", { number: issueNum }, lang));
+      await ctx.reply(t("line.error_agent_not_found", { number: issueNum }, lang));
       return true;
     }
   }

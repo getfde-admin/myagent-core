@@ -1,4 +1,4 @@
-# altShiftClawCore — 重写完成报告
+# myAgentCore — 重写完成报告
 
 > **✅ Phase R + Swap 完成（2026-08-03）**
 > 旧 20K 行混淆 bundle → 干净模块化源码（59 文件 / 9.9K 行）
@@ -24,7 +24,7 @@
 
 - **源码**：`src/`（59 文件，9.9K 行）— 干净模块化 JS
 - **归档**：`src-legacy/`（旧混淆 bundle + 历史审计记录）
-- **构建**：`npm run build` → `GitHubClawCore/index.js`（689KB）
+- **构建**：`npm run build` → `GitHubAgentCore/index.js`（689KB）
 - **护栏**：54/54 全绿（14 + 40）
 - **i18n**：814×2 对等，real gap = 0
 - **技术栈**：Cloudflare Workers + Hono + grammY + Octokit + D1 + Workers AI
@@ -32,7 +32,7 @@
 ## 目录结构
 
 ```
-altShiftClawCore/
+myAgentCore/
 ├── src/                    # 干净源码（入口 worker.js）
 │   ├── worker.js           # export { fetch, scheduled }
 │   ├── config.js
@@ -49,8 +49,8 @@ altShiftClawCore/
 │   ├── index.js            # 20K 行混淆代码
 │   ├── MODULE_MAP.md
 │   └── AUDIT-DEEP.md       # 历史审计记录（132 项）
-├── build.mjs               # esbuild: src/worker.js → GitHubClawCore/index.js
-├── GitHubClawCore/         # 构建产物 + D1 migrations
+├── build.mjs               # esbuild: src/worker.js → GitHubAgentCore/index.js
+├── GitHubAgentCore/         # 构建产物 + D1 migrations
 ├── test/                   # 护栏 + shadow-diff + mock
 └── ARCHITECTURE.md         # 系统架构报告（含 Mermaid 图表）
 ```

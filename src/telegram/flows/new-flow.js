@@ -150,7 +150,7 @@ export function registerFlowCancel(composer) {
     }
     await clearFlowState(store, chatId);
     await ctx.answerCallbackQuery(t("newFlow.setupCancelled", {}, lang));
-    await ctx.editMessageText(t("newFlow.lobsterSetupCancelled", {}, lang), {
+    await ctx.editMessageText(t("newFlow.agentSetupCancelled", {}, lang), {
       reply_markup: { inline_keyboard: [] },
     });
   });

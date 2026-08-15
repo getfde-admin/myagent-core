@@ -29,11 +29,11 @@ jobs:
         run: |
           set -euo pipefail
           # Match the official zip layout: the package contains actions/ (the instance's managing workflows).
-          # deploy-lobster-burger.yml overwrites actions/ into the instance's .github/workflows/ on
+          # deploy-myagent.yml overwrites actions/ into the instance's .github/workflows/ on
           # every deploy/update of the core and commits it — this is the only auto-channel through
           # which existing instances pick up workflow updates (new command menu, update-llm-secret.yml, etc.).
-          # The single source of truth is altShiftClawToolkit/installer/workflows, pulled at publish time.
-          git clone --depth 1 https://github.com/jeffsia-blacksmith/altShiftClawToolkit.git /tmp/toolkit
+          # The single source of truth is myAgentToolkit/installer/workflows, pulled at publish time.
+          git clone --depth 1 https://github.com/jeffsia-blacksmith/myAgentToolkit.git /tmp/toolkit
           rm -rf actions
           mkdir -p actions
           cp -R /tmp/toolkit/installer/workflows/. actions/
@@ -44,15 +44,15 @@ jobs:
           cd "$(git rev-parse --show-toplevel)"
 
           # Create the zip package with the same structure as the original
-          zip -r _site/github-claw-worker-package.zip \
-            GitHubClawCore/ \
+          zip -r _site/github-agent-worker-package.zip \
+            GitHubAgentCore/ \
             Terraform/ \
             actions/
 
           # Generate manifest
           REVISION="$(git rev-parse HEAD)"
-          VERSION="$(jq -r '.version' github-claw-worker-package.json)"
-          PACKAGE_URL="https://jeffsia-blacksmith.github.io/altShiftClawCore/github-claw-worker-package.zip"
+          VERSION="$(jq -r '.version' github-agent-worker-package.json)"
+          PACKAGE_URL="https://jeffsia-blacksmith.github.io/myAgentCore/github-agent-worker-package.zip"
 
           jq -n \
             --arg version "$VERSION" \
@@ -64,7 +64,7 @@ jobs:
               revision: $revision,
               package_url: $package_url,
               published_at: $published_at
-            }' > _site/github-claw-worker-package.json
+            }' > _site/github-agent-worker-package.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

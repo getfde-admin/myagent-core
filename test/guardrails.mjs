@@ -42,7 +42,7 @@ const MOCK_ENV = {
   TELEGRAM_API_BASE_URL: "https://api.telegram.org",
   TELEGRAM_WEBHOOK_PATH: "/telegram/webhook",
   TELEGRAM_MAX_MESSAGE_LENGTH: "4096",
-  CLAW_SYS_GITHUB_TOKEN: "ghp_fake",
+  AGENT_SYS_GITHUB_TOKEN: "ghp_fake",
   SCHEDULES_DB: { prepare: () => ({ bind: () => ({}), run: async () => ({}), first: async () => null, all: async () => [] }) },
 };
 
@@ -70,7 +70,7 @@ await hit("GET /health → 200 {ok,service}", "/health", {}, async (res) => {
   is(res, 200);
   const b = await json(res);
   if (b.ok !== true) throw new Error(`ok !== true: ${JSON.stringify(b)}`);
-  if (b.service !== "githubclaw-core") throw new Error(`service mismatch: ${b.service}`);
+  if (b.service !== "githubagent-core") throw new Error(`service mismatch: ${b.service}`);
 });
 
 await hit("GET / → 200 (root alias)", "/", {}, async (res) => {
@@ -245,7 +245,7 @@ function baseEnv(overrides = {}) {
     TELEGRAM_API_BASE_URL: "https://api.telegram.org",
     TELEGRAM_WEBHOOK_PATH: "/telegram/webhook",
     TELEGRAM_MAX_MESSAGE_LENGTH: "4096",
-    CLAW_SYS_GITHUB_TOKEN: "ghp_fake",
+    AGENT_SYS_GITHUB_TOKEN: "ghp_fake",
     SCHEDULES_DB: makeD1(),
     ...overrides,
   };
@@ -347,7 +347,7 @@ await hitTg("POST /help (configured) → reply with command list", guardedEnv, t
   if (text.length < 20) throw new Error(`help reply too short: ${text}`);
 });
 
-// 5. /list with empty issues → one "no lobsters" reply
+// 5. /list with empty issues → one "no agents" reply
 await hitTg("POST /list empty issues → reply (GitHub mocked empty)", guardedEnv, tgUpdate("/list"), [gh.issues([])], async (res, replies) => {
   is(res, 200);
   assertReply(replies);

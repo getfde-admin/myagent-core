@@ -31,19 +31,19 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;           // Xk (L18742)
 // ─── Meta regex patterns (对齐 E_/S_/nm/sm/om/im/am/I_/v_/C_/R_/A_) ──────────
 
 const RE_TELEGRAM_META  = /<!--\s*telegram-meta:\s*(\{[\s\S]*?\})\s*-->/;
-const RE_ALBUM_META      = /<!--\s*githubclaw-album-meta:\s*(\{[\s\S]*?\})\s*-->/;
+const RE_ALBUM_META      = /<!--\s*githubagent-album-meta:\s*(\{[\s\S]*?\})\s*-->/;
 const RE_LINE_META       = /<!--\s*line-meta:\s*(\{[\s\S]*?\})\s*-->/;
-const RE_BRAIN_RESULT    = /<!--\s*githubclaw-brain-result:\s*(\{[\s\S]*?\})\s*-->/;
-const RE_TOOL_RUN       = /<!--\s*githubclaw-tool-run:\s*(\{[\s\S]*?\})\s*-->/;
-const RE_ARTIFACTS      = /<!--\s*githubclaw-artifacts:\s*(\{[\s\S]*?\})\s*-->/;
-const RE_MEDIA_META     = /<!--\s*githubclaw-media-meta:\s*(\{[\s\S]*?\})\s*-->/;
+const RE_BRAIN_RESULT    = /<!--\s*githubagent-brain-result:\s*(\{[\s\S]*?\})\s*-->/;
+const RE_TOOL_RUN       = /<!--\s*githubagent-tool-run:\s*(\{[\s\S]*?\})\s*-->/;
+const RE_ARTIFACTS      = /<!--\s*githubagent-artifacts:\s*(\{[\s\S]*?\})\s*-->/;
+const RE_MEDIA_META     = /<!--\s*githubagent-media-meta:\s*(\{[\s\S]*?\})\s*-->/;
 // g-flagged versions for replace-all in stripAllMeta
-const RE_ALBUM_META_G    = /<!--\s*githubclaw-album-meta:\s*\{[\s\S]*?\}\s*-->/g;
+const RE_ALBUM_META_G    = /<!--\s*githubagent-album-meta:\s*\{[\s\S]*?\}\s*-->/g;
 const RE_LINE_META_G     = /<!--\s*line-meta:\s*\{[\s\S]*?\}\s*-->/g;
-const RE_BRAIN_RESULT_G  = /<!--\s*githubclaw-brain-result:\s*\{[\s\S]*?\}\s*-->/g;
-const RE_TOOL_RUN_G     = /<!--\s*githubclaw-tool-run:\s*\{[\s\S]*?\}\s*-->/g;
-const RE_ARTIFACTS_G    = /<!--\s*githubclaw-artifacts:\s*\{[\s\S]*?\}\s*-->/g;
-const RE_MEDIA_META_G   = /<!--\s*githubclaw-media-meta:\s*\{[\s\S]*?\}\s*-->/g;
+const RE_BRAIN_RESULT_G  = /<!--\s*githubagent-brain-result:\s*\{[\s\S]*?\}\s*-->/g;
+const RE_TOOL_RUN_G     = /<!--\s*githubagent-tool-run:\s*\{[\s\S]*?\}\s*-->/g;
+const RE_ARTIFACTS_G    = /<!--\s*githubagent-artifacts:\s*\{[\s\S]*?\}\s*-->/g;
+const RE_MEDIA_META_G   = /<!--\s*githubagent-media-meta:\s*\{[\s\S]*?\}\s*-->/g;
 const RE_TELEGRAM_META_G = /<!--\s*telegram-meta:\s*\{[\s\S]*?\}\s*-->/g;
 const RE_TOOL_RUN_TAG   = /<useTool\b[^>]*>[\s\S]*?<\/useTool>\s*/g;  // I_
 const RE_TOOL_RUN_PREFIX = /^工具\s+`[^`]+`\s+(?:已完成|执行失败)。(?:\r?\n\s*)*/; // v_
@@ -51,8 +51,8 @@ const RE_CODE_IMAGE     = /`([^`\r\n]+?\.(?:png|jpe?g|webp|gif))`/gi;  // C_
 const RE_PATH_IMAGE     = /(^|[^A-Za-z0-9/_.-])((?:[A-Za-z0-9._-]+\/)+[A-Za-z0-9._-]+\.(?:png|jpe?g|webp|gif))(?=$|[^A-Za-z0-9/_.-])/gim; // R_
 const RE_MD_IMAGE       = /!\[[^\]]*\]\((https?:\/\/[^)\s]+\.(?:png|jpe?g|webp|gif)[^)\s]*)\)/gi; // A_
 
-const BRAIN_RESULT_KEY = "githubclaw-brain-result"; // x_
-const TOOL_RUN_KEY     = "githubclaw-tool-run";     // P_
+const BRAIN_RESULT_KEY = "githubagent-brain-result"; // x_
+const TOOL_RUN_KEY     = "githubagent-tool-run";     // P_
 const LINE_META_KEY    = "line-meta";               // M_
 
 // ─── Meta helpers ────────────────────────────────────────────────────────────
@@ -612,7 +612,7 @@ function skillDocsUrl(comment) {
   if (parseMetaComment(comment?.body || "")?.source !== "skill-installer") return "";
   const name = extractSkillName(comment?.body || "");
   return name
-    ? `https://github.com/jeffsia-blacksmith/altShiftClawToolkit/blob/main/skills/${encodeURIComponent(name)}/README.md`
+    ? `https://github.com/jeffsia-blacksmith/myAgentToolkit/blob/main/skills/${encodeURIComponent(name)}/README.md`
     : "";
 }
 

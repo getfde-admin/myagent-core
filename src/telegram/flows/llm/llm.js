@@ -16,10 +16,10 @@ async function getContent(octokit, owner, repo, path, ref) {
   return null;
 }
 
-// llmLoadCatalog — 尝试 templates/default/githubclaw.json，或从任意 templates/*/githubclaw.json 读取
+// llmLoadCatalog — 尝试 templates/default/githubagent.json，或从任意 templates/*/githubagent.json 读取
 async function loadCatalog(octokit, owner, repo) {
   try {
-    const res = await getContent(octokit, owner, repo, "templates/default/githubclaw.json", "main");
+    const res = await getContent(octokit, owner, repo, "templates/default/githubagent.json", "main");
     if (res) return res;
   } catch {}
   try {
@@ -28,7 +28,7 @@ async function loadCatalog(octokit, owner, repo) {
       for (const item of data) {
         if (item.type === "dir") {
           try {
-            const cat = await getContent(octokit, owner, repo, `templates/${item.name}/githubclaw.json`, "main");
+            const cat = await getContent(octokit, owner, repo, `templates/${item.name}/githubagent.json`, "main");
             if (cat) return cat;
           } catch {}
         }
@@ -169,7 +169,7 @@ export function registerLlm(composer) {
     if (!chatId) return;
     const active = await getActiveIssue(store, chatId);
     if (!active) {
-      await ctx.reply("⚠️ No Lobster selected yet. Please use /list to pick one first. (LLM settings are per-Lobster.)");
+      await ctx.reply("⚠️ No Agent selected yet. Please use /list to pick one first. (LLM settings are per-Agent.)");
       return;
     }
     let catalog;
@@ -180,7 +180,7 @@ export function registerLlm(composer) {
       return;
     }
     if (!catalog) {
-      await ctx.reply("❌ Provider catalog not found (templates/default/githubclaw.json). Please ensure the template is synced.");
+      await ctx.reply("❌ Provider catalog not found (templates/default/githubagent.json). Please ensure the template is synced.");
       return;
     }
     const settings = await readSettings(octokit, owner, repo, active).catch(() => ({}));

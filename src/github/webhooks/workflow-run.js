@@ -140,7 +140,7 @@ function skillsNotifyText(sourceType, conclusion, status, name, target, lang) {
     : sourceType === "skill_update" ? t("skills.action_update", {}, lang)
     : t("skills.action_install", {}, lang);
   const eName = escapeMdV2(name);
-  const eTarget = target; // target 已含 escapeMarkdownV2（🦞 title \#num）
+  const eTarget = target; // target 已含 escapeMarkdownV2（🤖 title \#num）
   const eAction = escapeMdV2(action);
   if (conclusion === "success" && sourceType === "skill_remove") return t("skills.removed_message", { name: eName, target: eTarget }, lang);
   if (conclusion === "success") return t("skills.installed_message", { name: eName, action: eAction, target: eTarget }, lang);
@@ -238,12 +238,12 @@ export function registerWorkflowRunHandlers(webhooks, env) {
             issueTitle = iss.title;
           } catch {}
         }
-        // CE — target text（对齐 L19545-19563: 🦞 title \#num / 🦞 \#num / fallback）
+        // CE — target text（对齐 L19545-19563: 🤖 title \#num / 🤖 \#num / fallback）
         const target = issueNum && issueTitle
-          ? `🦞 ${escapeMdV2(issueTitle)} \\#${issueNum}`
+          ? `🤖 ${escapeMdV2(issueTitle)} \\#${issueNum}`
           : issueNum
-            ? `🦞 \\#${issueNum}`
-            : t("skills.targetLobsterFallback", {}, lang);
+            ? `🤖 \\#${issueNum}`
+            : t("skills.targetAgentFallback", {}, lang);
         text = skillsNotifyText(sourceType, conclusion, runStatus, name, target, lang);
         // skills 成功 + 有 issueNum → 建 issue comment（对齐 RE L19557-19570）
         if (issueNum && conclusion === "success") {

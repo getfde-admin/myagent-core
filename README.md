@@ -1,12 +1,12 @@
-# altShiftClawCore
+# myAgentCore
 
-我方的 GitHubClaw Core 套件（源自 [duotify](https://github.com/duotify) 的 GitHubClaw，已从头重写）。
-内含**预先打包好的 Cloudflare Worker**、**Terraform** 设定、以及 **D1 migrations**，是「龙虾堡」部署时实际跑起来的核心。
+我方的 GitHubAgent Core 套件（源自 [duotify](https://github.com/duotify) 的 GitHubAgent，已从头重写）。
+内含**预先打包好的 Cloudflare Worker**、**Terraform** 设定、以及 **D1 migrations**，是「Agent堡」部署时实际跑起来的核心。
 
 ## 结构
 
 ```
-altShiftClawCore/
+myAgentCore/
 ├── src/                      # 干净模块化源码（59 文件，~10K 行）
 │   ├── worker.js             # 入口：export { fetch, scheduled }
 │   ├── config.js             # 环境变量 / binding 解析
@@ -20,10 +20,10 @@ altShiftClawCore/
 │   ├── i18n/                 # t() / glang() + en.json (814 keys) + zh-CN.json (814 keys)
 │   └── modules/              # 共享 shim（empty.js, tweetnacl, content-type）
 ├── src-legacy/               # 旧混淆 bundle 归档（~20K 行，仅参考）
-├── build.mjs                 # esbuild：src/worker.js → GitHubClawCore/index.js
+├── build.mjs                 # esbuild：src/worker.js → GitHubAgentCore/index.js
 ├── package.json              # npm run build / check / test:guardrails / test:guardrails-v2
 ├── test/                     # e2e 护栏（14 + 40）+ shadow-diff + mock 基础设施
-├── GitHubClawCore/
+├── GitHubAgentCore/
 │   ├── index.js              # 【build 产物】Cloudflare Worker（压缩 bundle）← Terraform 读这个
 │   └── migrations/           # D1 database migrations（0001–0005）
 ├── Terraform/                # Cloudflare Worker + D1 IaC 定义
@@ -34,7 +34,7 @@ altShiftClawCore/
 
 ```bash
 npm install               # 安装依赖
-npm run build             # src/worker.js → GitHubClawCore/index.js
+npm run build             # src/worker.js → GitHubAgentCore/index.js
 npm run test:guardrails   # 14 护栏
 npm run test:guardrails-v2 # 40 护栏
 ```

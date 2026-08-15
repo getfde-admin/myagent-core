@@ -95,7 +95,7 @@ function branchCommentBody(meta, files, caption, mediaMeta, lang) {
 }
 // Pi — media-meta comment（对齐 dm L6678-6680）
 function mediaMetaComment(stage, kind, tempPaths, finalPaths) {
-  return `<!-- githubclaw-media-meta: ${JSON.stringify({ stage, kind, temp_paths: tempPaths, final_paths: finalPaths })} -->`;
+  return `<!-- githubagent-media-meta: ${JSON.stringify({ stage, kind, temp_paths: tempPaths, final_paths: finalPaths })} -->`;
 }
 // Ai — raw blob URL: github.com/blob/<branch>/path?raw=true（对齐 L16656-16662）
 function rawBlobUrl(owner, repo, branch, path) {
@@ -146,15 +146,15 @@ async function checkAlbumDispatch(octokit, owner, repo, issueNumber, lang) {
     if (wf) { workflowExists = true; workflowEnabled = wf.state !== "disabled_manually"; }
   } catch {}
   const acceptsDispatch = branchExists && workflowExists && workflowEnabled;
-  let clawName = "";
+  let agentName = "";
   try {
     const { data: iss } = await octokit.rest.issues.get({ owner, repo, issue_number: issueNumber });
-    clawName = iss.title ?? "";
+    agentName = iss.title ?? "";
   } catch {}
   let restingMessage;
   if (acceptsDispatch) restingMessage = buildRestingReply("", lang);
   else if (!branchExists || !workflowExists) restingMessage = buildMissingSetupReply(lang);
-  else restingMessage = buildRestingReply(clawName, lang);
+  else restingMessage = buildRestingReply(agentName, lang);
   return { branchExists, workflowExists, workflowEnabled, acceptsDispatch, restingMessage };
 }
 

@@ -19,7 +19,7 @@ export function registerStart(composer) {
       const active = chatId ? await getActiveIssue(store, chatId) : null;
 
       if (issues.length === 0) {
-        await ctx.reply(t("core.noLobstersYet", {}, lang));
+        await ctx.reply(t("core.noAgentsYet", {}, lang));
         return;
       }
 
@@ -27,11 +27,11 @@ export function registerStart(composer) {
         ? (issues.find((it) => it.number === active)
             ? t("core.currentActive", {
                 number: active,
-                title: issues.find((it) => it.number === active).title || t("core.unnamedLobster", {}, lang),
+                title: issues.find((it) => it.number === active).title || t("core.unnamedAgent", {}, lang),
               }, lang)
             : t("core.currentActiveNotFound", { number: active }, lang))
         : null;
-      const header = [activeLine, t("core.yourLobsters", {}, lang)].filter(Boolean).join("\n");
+      const header = [activeLine, t("core.yourAgents", {}, lang)].filter(Boolean).join("\n");
       const keyboard = switchIssueKeyboard(issues);
       const sent = await ctx.reply(header, { reply_markup: keyboard });
       if (chatId && sent.message_id) {

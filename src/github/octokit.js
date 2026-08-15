@@ -8,6 +8,6 @@ export function buildOctokit(config) {
   return new Octokit({
     auth: config.github?.token,
     baseUrl: config.github?.apiBaseUrl ?? "https://api.github.com",
-    userAgent: config.github?.userAgent ?? "altShiftClawCore/1.0.0",
+    userAgent: config.github?.userAgent ?? "myAgentCore/1.0.0",
   });
 }

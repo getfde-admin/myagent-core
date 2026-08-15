@@ -1,6 +1,6 @@
 // telegram/flows/callbacks.js — issue 选择 / 关闭回调
 // 行为对齐旧 bundle zt（L14305-14460）：switch_issue、close_issue_prompt/confirm/cancel。
-// 含 menu-state 守卫 Hs（L14296）、issue 列表 Ht（L14276）、lobster label Ei（L14290）。
+// 含 menu-state 守卫 Hs（L14296）、issue 列表 Ht（L14276）、agent label Ei（L14290）。
 
 import { t, glang } from "../../i18n/index.js";
 import { logWarn } from "../../i18n/log.js";
@@ -54,11 +54,11 @@ async function listOpenIssues(octokit, owner, repo) {
     .map((it) => ({ number: it.number, title: it.title, body: it.body }));
 }
 
-// Ei(number, title) — lobster label
-function lobsterLabel(number, title, lang) {
+// Ei(number, title) — agent label
+function agentLabel(number, title, lang) {
   return title
-    ? t("core.lobsterLabelWithTitle", { number, title }, lang)
-    : t("core.lobsterLabel", { number }, lang);
+    ? t("core.agentLabelWithTitle", { number, title }, lang)
+    : t("core.agentLabel", { number }, lang);
 }
 
 export function registerFlowCallbacks(composer) {
@@ -77,13 +77,13 @@ export function registerFlowCallbacks(composer) {
     const issues = await listOpenIssues(octokit, owner, repo);
     const found = issues.find((it) => it.number === num);
     if (!found) {
-      await ctx.answerCallbackQuery(t("core.lobsterNotOpen", {}, lang));
+      await ctx.answerCallbackQuery(t("core.agentNotOpen", {}, lang));
       return;
     }
     await clearFlowState(store, chatId);
     await setActiveIssue(store, num, chatId);
     await ctx.answerCallbackQuery();
-    await ctx.reply(t("core.switchedToLobster", { title: found.title, number: num }, lang));
+    await ctx.reply(t("core.switchedToAgent", { title: found.title, number: num }, lang));
     // 发 status card
     const { sendStatusCard } = await import("../status-card.js");
     await sendStatusCard(ctx, num);
@@ -96,21 +96,21 @@ export function registerFlowCallbacks(composer) {
     if (!chatId || !(await menuGuard(ctx, "close", "core.closeMenuExpired"))) return;
     const num = parseIssueNumber(ctx.callbackQuery.data);
     if (!num) {
-      await ctx.answerCallbackQuery(t("core.invalidLobsterNumber", {}, lang));
+      await ctx.answerCallbackQuery(t("core.invalidAgentNumber", {}, lang));
       return;
     }
     const { octokit, config } = ctx.services;
     const issues = await listOpenIssues(octokit, config.github.owner, config.github.repo);
     if (issues.length <= 1) {
-      await ctx.answerCallbackQuery(t("core.lastLobsterMustKeep", {}, lang));
-      await ctx.editMessageText(t("core.closeOnlyOneLobsterLeftMessage", {}, lang), {
+      await ctx.answerCallbackQuery(t("core.lastAgentMustKeep", {}, lang));
+      await ctx.editMessageText(t("core.closeOnlyOneAgentLeftMessage", {}, lang), {
         reply_markup: { inline_keyboard: [] },
       });
       return;
     }
     const found = issues.find((it) => it.number === num);
     if (!found) {
-      await ctx.answerCallbackQuery(t("core.lobsterAlreadyClosed", {}, lang));
+      await ctx.answerCallbackQuery(t("core.agentAlreadyClosed", {}, lang));
       return;
     }
     await ctx.answerCallbackQuery(t("core.closeConfirmAnswer", {}, lang));
@@ -118,7 +118,7 @@ export function registerFlowCallbacks(composer) {
       .text(t("kb.confirmClose", {}, lang), `close_issue_confirm:${num}`)
       .text(t("kb.closeCancel", {}, lang), `close_issue_cancel:${num}`);
     const text = [
-      t("core.closeConfirmQuestion", { target: lobsterLabel(num, found.title, lang) }, lang),
+      t("core.closeConfirmQuestion", { target: agentLabel(num, found.title, lang) }, lang),
       "",
       t("core.closeConfirmDescription", {}, lang),
     ].join("\n");
@@ -151,15 +151,15 @@ export function registerFlowCallbacks(composer) {
     const { owner, repo } = config.github;
     const issues = await listOpenIssues(octokit, owner, repo);
     if (!issues.find((it) => it.number === num)) {
-      await ctx.answerCallbackQuery(t("core.lobsterAlreadyClosed", {}, lang));
+      await ctx.answerCallbackQuery(t("core.agentAlreadyClosed", {}, lang));
       await ctx.editMessageText(t("core.closeAlreadyClosedMessage", {}, lang), {
         reply_markup: { inline_keyboard: [] },
       });
       return;
     }
     if (issues.length <= 1) {
-      await ctx.answerCallbackQuery(t("core.lastLobsterMustKeep", {}, lang));
-      await ctx.editMessageText(t("core.closeOnlyOneLobsterLeftMessage", {}, lang), {
+      await ctx.answerCallbackQuery(t("core.lastAgentMustKeep", {}, lang));
+      await ctx.editMessageText(t("core.closeOnlyOneAgentLeftMessage", {}, lang), {
         reply_markup: { inline_keyboard: [] },
       });
       return;
@@ -198,7 +198,7 @@ export function registerFlowCallbacks(composer) {
     }
     await ctx.answerCallbackQuery(t("core.closeAnswer", {}, lang));
     const text = [
-      t("core.closeTargetSuccess", { target: lobsterLabel(closed.number, closed.title, lang) }, lang),
+      t("core.closeTargetSuccess", { target: agentLabel(closed.number, closed.title, lang) }, lang),
       "",
       scheduleLine,
       "",

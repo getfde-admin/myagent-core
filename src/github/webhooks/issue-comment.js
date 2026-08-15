@@ -15,7 +15,7 @@ function isScheduledTriggerBot(payload) {
   return meta.source === "scheduled-trigger";
 }
 
-// isMediaPending: comment body contains githubclaw-media-meta stage=pending
+// isMediaPending: comment body contains githubagent-media-meta stage=pending
 function isMediaPending(payload) {
   return isMediaStage(payload.comment?.body ?? "", "pending");
 }
@@ -26,7 +26,7 @@ export function registerIssueCommentHandlers(webhooks, env) {
     const isSchedBot = isScheduledTriggerBot(payload);
     const pending = isMediaPending(payload);
 
-    // Scheduled-trigger comments are prompts FOR the lobster — they should not
+    // Scheduled-trigger comments are prompts FOR the agent — they should not
     // be relayed to the Telegram chat. Only dispatch the coding agent.
     if (isSchedBot) {
       await dispatchCodingAgent(payload, env).catch((e) => {

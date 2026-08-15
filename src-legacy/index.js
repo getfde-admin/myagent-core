@@ -5819,7 +5819,7 @@ async function Zo(e, owner, r, n, s) {
 }
 // ╔══════════════════════════════════════════════════════════════════════════════
 // ║ [MODULE Xr] GitHub REST client wrapper  —  BUSINESS
-// ║ GitHub API call wrapper (User-Agent: altShiftClawCore, X-GitHub-Api-Version)
+// ║ GitHub API call wrapper (User-Agent: myAgentCore, X-GitHub-Api-Version)
 // ╚══════════════════════════════════════════════════════════════════════════════
 var Xr = Oe(() => {
   "use strict";
@@ -5829,7 +5829,7 @@ function $y(e) {
   let t = {
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": e.apiVersion || "2022-11-28",
-    "User-Agent": e.userAgent || "altShiftClawCore",
+    "User-Agent": e.userAgent || "myAgentCore",
   };
   return (e.token?.trim() && (t.Authorization = `Bearer ${e.token.trim()}`), t);
 }
@@ -5968,7 +5968,7 @@ async function bs(e) {
 async function ys(e, t) {
   try {
     let r = e.apiBaseUrl || "https://api.github.com",
-      n = `skills/${encodeURIComponent(t)}/githubclaw.json`,
+      n = `skills/${encodeURIComponent(t)}/githubagent.json`,
       s = `${r}/repos/${Np}/${Gp}/contents/${n}?ref=${encodeURIComponent(Fp)}`,
       o = await An(s, e);
     if (!o.ok)
@@ -6038,7 +6038,7 @@ var Op,
     ((el = Hy({ excludeKeys: By }).map((e) => ({ ...e, label: Ky(e.key) }))),
       (uv = new Set(el.map((e) => e.key))),
       (Np = "jeffsia-blacksmith"),
-      (Gp = "altShiftClawToolkit"),
+      (Gp = "myAgentToolkit"),
       (Fp = "main"),
       (zy = 5 * 6e4),
       (Wt = null));
@@ -6669,14 +6669,14 @@ function cm(e, t = {}) {
 function pl(e, t = {}) {
   let r = typeof e == "string" ? e.trim() : "",
     n = ii(t.requestTelegramMeta),
-    s = { source: "githubclaw-worker-brain", ...(n ? { requestTelegramMeta: n } : {}) },
-    o = `<!-- githubclaw-brain-result: ${JSON.stringify(s)} -->`;
+    s = { source: "githubagent-worker-brain", ...(n ? { requestTelegramMeta: n } : {}) },
+    o = `<!-- githubagent-brain-result: ${JSON.stringify(s)} -->`;
   return [r, o].filter(Boolean).join(`
 
 `);
 }
 function dm(e) {
-  return `<!-- githubclaw-media-meta: ${JSON.stringify(e)} -->`;
+  return `<!-- githubagent-media-meta: ${JSON.stringify(e)} -->`;
 }
 function pm(e) {
   if (typeof e != "string") return [];
@@ -6723,20 +6723,20 @@ var E_,
   Pt = Oe(() => {
     "use strict";
     ((E_ = /<!--\s*telegram-meta:\s*(\{[\s\S]*?\})\s*-->/),
-      (S_ = /<!--\s*githubclaw-album-meta:\s*(\{[\s\S]*?\})\s*-->/),
+      (S_ = /<!--\s*githubagent-album-meta:\s*(\{[\s\S]*?\})\s*-->/),
       (nm = /<!--\s*line-meta:\s*(\{[\s\S]*?\})\s*-->/),
-      (sm = /<!--\s*githubclaw-brain-result:\s*(\{[\s\S]*?\})\s*-->/),
-      (om = /<!--\s*githubclaw-tool-run:\s*(\{[\s\S]*?\})\s*-->/),
-      (im = /<!--\s*githubclaw-artifacts:\s*(\{[\s\S]*?\})\s*-->/),
-      (am = /<!--\s*githubclaw-media-meta:\s*(\{[\s\S]*?\})\s*-->/),
+      (sm = /<!--\s*githubagent-brain-result:\s*(\{[\s\S]*?\})\s*-->/),
+      (om = /<!--\s*githubagent-tool-run:\s*(\{[\s\S]*?\})\s*-->/),
+      (im = /<!--\s*githubagent-artifacts:\s*(\{[\s\S]*?\})\s*-->/),
+      (am = /<!--\s*githubagent-media-meta:\s*(\{[\s\S]*?\})\s*-->/),
       (I_ = /<useTool\b[^>]*>[\s\S]*?<\/useTool>\s*/g),
       (v_ = /^工具\s+`[^`]+`\s+(?:已完成|执行失败)。(?:\r?\n\s*)*/),
       (C_ = /`([^`\r\n]+?\.(?:png|jpe?g|webp|gif))`/gi),
       (R_ =
         /(^|[^A-Za-z0-9/_.-])((?:[A-Za-z0-9._-]+\/)+[A-Za-z0-9._-]+\.(?:png|jpe?g|webp|gif))(?=$|[^A-Za-z0-9/_.-])/gim),
       (A_ = /!\[[^\]]*\]\((https?:\/\/[^)\s]+\.(?:png|jpe?g|webp|gif)[^)\s]*)\)/gi),
-      (x_ = "githubclaw-brain-result"),
-      (P_ = "githubclaw-tool-run"),
+      (x_ = "githubagent-brain-result"),
+      (P_ = "githubagent-tool-run"),
       (M_ = "line-meta"));
   });
 function B_(e) {
@@ -9285,7 +9285,7 @@ function To(e) {
           ? e.GITHUB_API_BASE_URL.trim()
           : "https://api.github.com",
       apiVersion: "2022-11-28",
-      userAgent: "altShiftClawCore/1.0.0",
+      userAgent: "myAgentCore/1.0.0",
       webhookPath: "/github/webhook",
     },
     scheduleStorage: { database: fh(t, "SCHEDULES_DB") },
@@ -11993,11 +11993,11 @@ var Jc = (e, t) =>
 var Ao = new Rt();
 Ao.get("/", (e) => {
   let t = e.var?.config?.version ?? "1.0.0";
-  return e.json({ ok: !0, service: "githubclaw-core", version: t });
+  return e.json({ ok: !0, service: "githubagent-core", version: t });
 });
 Ao.get("/health", (e) => {
   let t = e.var?.config?.version ?? "1.0.0";
-  return e.json({ ok: !0, service: "githubclaw-core", version: t });
+  return e.json({ ok: !0, service: "githubagent-core", version: t });
 });
 Ie();
 Ie();
@@ -12138,7 +12138,7 @@ Ko.command("help", async (e) => {
 });
 Ko.command("version", async (e) => {
   let { config: t } = e.services;
-  await e.reply(`\u{1F99E} altShiftClawCore v${t.version}`);
+  await e.reply(`\u{1F99E} myAgentCore v${t.version}`);
 });
 Ie();
 Ve();
@@ -12745,7 +12745,7 @@ async function Ir(e, t) {
 Za();
 Yr();
 var Gm = "jeffsia-blacksmith",
-  Fm = "altShiftClawToolkit",
+  Fm = "myAgentToolkit",
   $m = "main",
   aT = 5 * 6e4,
   templateCatalogIds = new Set(["default", "summary", "image-generation"]),
@@ -12819,7 +12819,7 @@ function lT(e) {
 }
 async function rn(e, t) {
   let r = e.apiBaseUrl || "https://api.github.com",
-    n = `templates/${encodeURIComponent(t)}/githubclaw.json`,
+    n = `templates/${encodeURIComponent(t)}/githubagent.json`,
     s = `${r}/repos/${Gm}/${Fm}/contents/${n}?ref=${encodeURIComponent($m)}`;
   try {
     let o = await An(s, e);
@@ -15190,7 +15190,7 @@ async function ak(e, t, r, n) {
     let s = await e.repos.getContent({
       owner: t,
       repo: r,
-      path: `templates/${n}/githubclaw.json`,
+      path: `templates/${n}/githubagent.json`,
       ref: "main",
     });
     if (!("content" in s.data) || typeof s.data.content != "string") return null;
@@ -17391,7 +17391,7 @@ ar();
 // ║ Flow: /llm → provider menu → (reuse existing key / enter new key) → model menu (incl. custom input)
 // ║ → writes to issue-N branch's .pi/settings.json (the real source read by issue-1.yml at task time)
 // ║ Key is delivered via repository_dispatch(update-llm-secret) to GitHub Actions to write to repo secret,
-// ║ and the user's key message is deleted immediately. The provider/model catalog is read from templates/default/githubclaw.json.
+// ║ and the user's key message is deleted immediately. The provider/model catalog is read from templates/default/githubagent.json.
 // ╚══════════════════════════════════════════════════════════════════════════════
 var llmStatePrefix = "llm-setup";
 function llmStateKey(e) {
@@ -17408,7 +17408,7 @@ async function llmClearState(e, t) {
   await e.delete(llmStateKey(t));
 }
 async function llmLoadCatalog(e, t, r) {
-  let n = await Wp(e, t, r, void 0, "templates/default/githubclaw.json");
+  let n = await Wp(e, t, r, void 0, "templates/default/githubagent.json");
   if (!n.content) return null;
   try {
     let s = JSON.parse(n.content);
@@ -17610,7 +17610,7 @@ llmComposer.command("llm", async (e) => {
   }
   if (!l) {
     await e.reply(
-      "❌ Provider catalog not found (templates/default/githubclaw.json). Please ensure the template is synced.",
+      "❌ Provider catalog not found (templates/default/githubagent.json). Please ensure the template is synced.",
     );
     return;
   }
@@ -18524,7 +18524,7 @@ function uu(e) {
       );
 }
 function cu(e, t, r = {}) {
-  console.log(`[altShiftClawCore] Telegram relay decision
+  console.log(`[myAgentCore] Telegram relay decision
 ${JSON.stringify({ issueNumber: e?.number ?? null, commentId: t?.id ?? null, ...r }, null, 2)}`);
 }
 function Zs(e, comment, r, n = !1) {
@@ -18720,7 +18720,7 @@ function Yk(e) {
   if (Cs(e?.body || "")?.source !== "skill-installer") return "";
   let r = Jk(e?.body || "");
   return r
-    ? `https://github.com/jeffsia-blacksmith/altShiftClawToolkit/blob/main/skills/${encodeURIComponent(r)}/README.md`
+    ? `https://github.com/jeffsia-blacksmith/myAgentToolkit/blob/main/skills/${encodeURIComponent(r)}/README.md`
     : "";
 }
 function Zf(e, issue, r) {
@@ -19354,7 +19354,7 @@ Ps();
 mt();
 ms();
 di();
-var lg = "init_github_claw_done";
+var lg = "init_github_agent_done";
 function yE(e, t) {
   let r = t.config.github.repoFullName.trim().toLowerCase(),
     n = Array.isArray(e.repositories) ? e.repositories : [];

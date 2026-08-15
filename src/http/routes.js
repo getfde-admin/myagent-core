@@ -41,11 +41,11 @@ export function createApp({ buildOctokit = defaultBuildOctokit } = {}) {
   // Ao — GET / + GET /health（L11993-12001）
   app.get("/", (c) => {
     const version = c.var?.config?.version ?? "1.0.0";
-    return c.json({ ok: true, service: "githubclaw-core", version });
+    return c.json({ ok: true, service: "githubagent-core", version });
   });
   app.get("/health", (c) => {
     const version = c.var?.config?.version ?? "1.0.0";
-    return c.json({ ok: true, service: "githubclaw-core", version });
+    return c.json({ ok: true, service: "githubagent-core", version });
   });
 
   // 探针：Workers AI binding 是否可用（部署后 curl 即可确认排程时间解析能否走 AI 路径）

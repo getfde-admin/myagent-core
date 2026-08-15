@@ -272,7 +272,7 @@ async function osEditFinalize(ctx, state) {
 // Ns — finalize 回复（L7534-7547）
 async function nsFinalizeReply(ctx, result, mode) {
   const lang = ctx.language ?? glang();
-  const text = t("newFlow.updatedLobster", { title: result.issue?.title ?? "", number: result.issue?.number ?? "" }, lang);
+  const text = t("newFlow.updatedAgent", { title: result.issue?.title ?? "", number: result.issue?.number ?? "" }, lang);
   if (mode === "edit") {
     try {
       await ctx.editMessageText(text, { reply_markup: { inline_keyboard: [] } });
@@ -302,7 +302,7 @@ export async function initEditFlow(ctx) {
     if (!chatId) return;
     const active = await getActiveIssue(store, chatId);
     if (!active || active <= 0) {
-      await ctx.reply(t("newFlow.noActiveLobster", {}, lang));
+      await ctx.reply(t("newFlow.noActiveAgent", {}, lang));
       return;
     }
     let issueData;
@@ -490,7 +490,7 @@ export function registerEditCallbacks(composer) {
         const { osCreateFinalize } = await import("../../github/branches.js");
         const result = await osCreateFinalize(ctx, newState);
         // Ns finalize reply (create mode → editMessageText 替换 creatingPleaseWait，失败回退 reply)
-        const replyText = t("newFlow.createdLobster", { title: result.issue?.title ?? "", number: result.issue?.number ?? "" }, lang);
+        const replyText = t("newFlow.createdAgent", { title: result.issue?.title ?? "", number: result.issue?.number ?? "" }, lang);
         try {
           await ctx.editMessageText(replyText);
         } catch {
